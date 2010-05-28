@@ -34,6 +34,10 @@ require "memcached"
 require "yaml"
 require "cgi"
 
+$: << "lib"
+
+require "openlylocal"
+
 class CostSavingExercise < Sinatra::Base
   set :root, File.dirname(__FILE__)
   set :app_file, __FILE__
@@ -50,6 +54,10 @@ class CostSavingExercise < Sinatra::Base
   get "/" do
     @page_title = "DIY Council"
     haml :home
+  end
+  
+  get "/council/:council_id" do |council_id|
+    
   end
   
   get '/css/:file' do

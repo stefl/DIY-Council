@@ -1,0 +1,31 @@
+= "<!DOCTYPE html>"
+%html{:lang => "en", :xmlns => "http://www.w3.org/1999/xhtml"}
+  %head
+    %title= @page_title
+    
+    %meta{:charset => "utf-8"}/
+    %meta{:name => "MSSmartTagsPreventParsing", :content => "true"}/
+    
+    %script{:src => "/js/jquery.js", :type => "text/javascript"}
+    %link{:href => "/css/screen.css", :media => 'screen', :rel => 'stylesheet', :type => 'text/css'}/
+    
+  %body
+    %div#page
+      - if flash.has?(:errors)
+        %div#message
+          - flash[:errors].each do |message|
+            = succeed "." do
+              = message
+        
+      %nav#masthead
+        %div#diycouncil
+          %p
+            %a{:href => "http://diycouncil.heroku.com", :class => "logo"} DIY Council
+        
+      %div#content
+        = yield
+      
+      %footer#credits
+        %p Mashed by 
+        %a{:href=>"http://stef.io"} Stef
+        and friends using open source things.

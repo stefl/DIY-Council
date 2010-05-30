@@ -1,4 +1,5 @@
 source   "http://rubygems.org"
+source   "http://gems.github.com"
 gem     "thin"
 gem     "chronic", "=0.2.3"
 gem     "sinatra", "=1.0"

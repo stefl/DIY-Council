@@ -20,12 +20,31 @@
       %nav#masthead
         %div#diycouncil
           %p
-            %a{:href => "http://diycouncil.heroku.com", :class => "logo"} DIY Council
+            %a{:href => "/", :class => "logo"} DIY 
+            - if @council
+              = @council["name"]
+            - else
+              Council
+            %span#about_this_site
+              an experiment in open local government
         
+     
       %div#content
+        - if @services
+          %nav#services
+            %ul
+              - @services.each do |service|
+                %li
+                  %a{:href => "/councils/#{@council["id"]}/services/#{service["id"]}"}
+                    = service["title"]
+                      
         = yield
       
       %footer#credits
-        %p Mashed by 
-        %a{:href=>"http://stef.io"} Stef
-        and friends using open source things.
+        %p 
+          Mashed by 
+          %a{:href=>"http://stef.io"} Stef
+          and friends using open source things:
+          %a{:href=>"http://www.ruby-lang.org/"} Ruby
+          %a{:href=>"http://openlylocal.com"} Openly Local
+          %a{:href=>"http://sinatrarb.com"} Sinatra

@@ -6,8 +6,8 @@
 
 !line= 18px
 
-!link= #1f87ce
-!background= #ddd
+!link= #1fce87
+!background= #ded
 
 body
   padding= 0 0 !line 0
@@ -17,7 +17,7 @@ body
   line-height= !line
   
   color: black
-  +gradient(!background, !background-#111)
+  +gradient(!background, !background-#121)
   background-position: 0 0
   background-attachment: fixed
   
@@ -59,7 +59,6 @@ body
     button
       overflow: visible
       +box-sizing(content-box)
-      display: block
       width= !unit*3-!gutter*2
 
       margin= 0
@@ -256,13 +255,12 @@ div#content
   position: relative
   clear: both
   min-height: 500px
-  
-  +border-radius(10px, 10px, 0, 0)
+  background-color: white
+  +border-radius(10px, 10px, 10px, 10px)
+  padding: 10px
   
   section
-    h1
-      margin= !line 0 !line !unit*2+!gutter*2
-      
+    h1      
       font-size: 18px
       text-shadow: 1px 1px 1px white
     
@@ -322,7 +320,6 @@ div#content
           -webkit-appearance: none
           overflow: visible
           +box-sizing(content-box)
-          display: block
           width: auto
 
           margin: 0
@@ -334,7 +331,6 @@ div#content
         
         a, 
         button span
-          display: block
           width= !unit*2-!gutter*4.5
 
           padding= !line/2 !gutter !line/2 !gutter*3.5
@@ -349,54 +345,6 @@ div#content
           background: 10px 50% no-repeat transparent
           border: none
           +border-radius(0, 10px, 10px, 0)
-          
-      li.review
-        a, button span
-          background-image: url(/i/famfamfam/film.png)
-
-      li.organise
-        a, button span
-          background-image: url(/i/famfamfam/images.png)
-
-      li.collection
-        a, button span
-          background-image: url(/i/famfamfam/box.png)
-
-      li.tag
-        a, button span
-          background-image: url(/i/famfamfam/tag_orange.png)
-
-      li.send
-        a, button span
-          background-image: url(/i/famfamfam/email.png)
-
-      li.conform
-        a, button span
-          background-image: url(/i/famfamfam/arrow_refresh.png)
-
-      li.schedule
-        a, button span
-          background-image: url(/i/famfamfam/calendar.png)
-
-      li.milestone
-        a, button span
-          background-image: url(/i/famfamfam/date.png)
-
-      li.team
-        a, button span
-          background-image: url(/i/famfamfam/group.png)
-
-      li.done
-        a, button span
-          background-image: url(/i/famfamfam/accept.png)
-          
-      li.cancel
-        a, button span
-          background-image: url(/i/famfamfam/cancel.png)
-          
-      li.activity
-        a, button span
-          background-image: url(/i/famfamfam/report.png)
           
       li
         a:hover,
@@ -809,19 +757,10 @@ div#content
             border-top: 1px solid #eee
             border-bottom: 1px solid #eee
           
-footer#thats-all-folks
+footer#credits
   clear: both
-  
-  margin: 0 -1px
-  padding: 1em 0
-  
+  margin-top: 1.5em
   text-align: center
-  
-  color: white
-  +gradient(#222, #111)
-  +border-radius(10px, 10px, 10px, 10px)
-  border: 1px solid #ddd
-  +box-shadow(rgba(0, 0, 0, 0.5), 0, 0, 2px)
       
 div#informer
   z-index: 1000
@@ -1038,3 +977,29 @@ div#tagging-watcher
 div#fancybox-wrap
   video
     background: #111
+
+nav#services
+  +expand
+  width: 300px
+  float: left
+  padding: 1.5em
+  margin-right: 3em
+  
+p
+  margin-bottom: 1.5em
+#diycouncil
+  font-size: 150%
+  margin-top: 1.5em
+dl
+  dt
+    font-weight: bold
+  dd
+    margin-bottom: 0.75em
+ul
+  margin-bottom: 0.75em
+h2, h3, h4, h5
+  margin-bottom:0.75em
+input#postcode
+  width: 8em !important
+#about_this_site
+  color: #aba

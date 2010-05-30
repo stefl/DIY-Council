@@ -1,4 +1,25 @@
 %section#home
   %header
-    %h1 
-      What's your postcode?
+      
+      
+      
+    #by_postcode
+      
+        
+      %form#your_postcode{:action=>"councils/find_by_postcode", :method=>:post}
+        %label{:for=>"postcode"} 
+          My postcode is
+          %input{:type=>"text",:size=>"8", :name=>"postcode", :id=>"postcode"}
+          %button{:type=>"submit", :name=>"Go"}
+            %span find out my council
+      
+    #by_name
+      %form#choose_a_council{:action=>"councils", :method=>:post}
+        %label{:for=>"council"}
+          My council is
+          %select{:name=>"council"}
+            - @councils.each do |council|
+              %option{:value=>council["id"]} 
+                = council["name"]
+          %button{:type=>"submit", :name=>"Go"}
+            %span so let's go

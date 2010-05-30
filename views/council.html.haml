@@ -1,0 +1,16 @@
+%h2
+  URL
+%p= @council.url
+%h2
+  Latest news
+%ul#latest_news
+  - unless @council.rss_feed.blank?
+    - @council.rss_feed.entries.each do |entry|
+      %li
+        %p
+          %strong
+            %a{:href=>entry.url}
+              = entry.title
+      
+          %br
+          = entry.summary

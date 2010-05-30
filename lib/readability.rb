@@ -1,16 +1,20 @@
 require 'rubygems'
 require 'nokogiri'
 
+# Forked Readability for local government sites
+
 module Readability
   class Document
-    TEXT_LENGTH_THRESHOLD = 25
+    TEXT_LENGTH_THRESHOLD = 12
     RETRY_LENGTH = 250
+    LINK_DENSITY_FACTOR = 1.5
 
     attr_accessor :options, :html
 
     def initialize(input, options = {})
       @input = input
       @options = options
+      @options[:attributes] ||= ["href","title","alt"]
       make_html
     end
 
@@ -21,9 +25,9 @@ module Readability
     REGEXES = {
         :unlikelyCandidatesRe => /combx|comment|disqus|foot|header|menu|meta|nav|rss|shoutbox|sidebar|sponsor/i,
         :okMaybeItsACandidateRe => /and|article|body|column|main/i,
-        :positiveRe => /article|body|content|entry|hentry|page|pagination|post|text/i,
-        :negativeRe => /combx|comment|contact|foot|footer|footnote|link|media|meta|promo|related|scroll|shoutbox|sponsor|tags|widget/i,
-        :divToPElementsRe => /<(a|blockquote|dl|div|img|ol|p|pre|table|ul)/i,
+        :positiveRe => /article|main|full|content|body|content|entry|hentry|page|pagination|post|text/i,
+        :negativeRe => /combx|comment|contact|foot|footer|footnote|link|media|meta|promo|related|scroll|shoutbox|sponsor|tags|You are here|crumbtrail|widget/i,
+        :divToPElementsRe => /<(blockquote|dl|div|img|p|pre)/i,
         :replaceBrsRe => /(<br[^>]*>[ \n\r\t]*){2,}/i,
         :replaceFontsRe => /<(\/?)font[^>]*>/i,
         :trimRe => /^\s+|\s+$/,
@@ -92,7 +96,7 @@ module Readability
 
       best_candidate = sorted_candidates.first || { :elem => @html.css("body").first, :content_score => 0 }
       debug("Best candidate #{best_candidate[:elem].name}##{best_candidate[:elem][:id]}.#{best_candidate[:elem][:class]} with score #{best_candidate[:content_score]}")
-
+      
       best_candidate
     end
 
@@ -126,7 +130,7 @@ module Readability
       # Scale the final candidates score based on link density. Good content should have a
       # relatively small link density (5% or less) and be mostly unaffected by this operation.
       candidates.each do |elem, candidate|
-        candidate[:content_score] = candidate[:content_score] * (1 - get_link_density(elem))
+        candidate[:content_score] = candidate[:content_score] + LINK_DENSITY_FACTOR * (candidate[:content_score] * (1 - get_link_density(elem)))
       end
 
       candidates
@@ -212,7 +216,7 @@ module Readability
       end
 
       node.css("form, object, iframe, embed").each do |elem|
-        elem.remove
+        #elem.remove
       end
 
       # remove empty <p> tags
@@ -221,55 +225,57 @@ module Readability
       end
 
       # Conditionally clean <table>s, <ul>s, and <div>s
-      node.css("table, ul, div").each do |el|
-        weight = class_weight(el)
-        content_score = candidates[el] ? candidates[el][:content_score] : 0
-        name = el.name.downcase
+      if 1==0
+        node.css("table, ul, div").each do |el|
+          weight = class_weight(el)
+          content_score = candidates[el] ? candidates[el][:content_score] : 0
+          name = el.name.downcase
 
-        if weight + content_score < 0
-          el.remove
-          debug("Conditionally cleaned #{name}##{el[:id]}.#{el[:class]} with weight #{weight} and content score #{content_score} because score + content score was less than zero.")
-        elsif el.text.count(",") < 10
-          counts = %w[p img li a embed input].inject({}) { |m, kind| m[kind] = el.css(kind).length; m }
-          counts["li"] -= 100
-
-          content_length = el.text.strip.length  # Count the text length excluding any surrounding whitespace
-          link_density = get_link_density(el)
-          to_remove = false
-          reason = ""
-
-          if counts["img"] > counts["p"]
-            reason = "too many images"
-            to_remove = true
-          elsif counts["li"] > counts["p"] && name != "ul" && name != "ol"
-            reason = "more <li>s than <p>s"
-            to_remove = true
-          elsif counts["input"] > (counts["p"] / 3).to_i
-            reason = "less than 3x <p>s than <input>s"
-            to_remove = true
-          elsif content_length < (options[:min_text_length] || TEXT_LENGTH_THRESHOLD) && (counts["img"] == 0 || counts["img"] > 2)
-            reason = "too short a content length without a single image"
-            to_remove = true
-          elsif weight < 25 && link_density > 0.2
-            reason = "too many links for its weight (#{weight})"
-            to_remove = true
-          elsif weight >= 25 && link_density > 0.5
-            reason = "too many links for its weight (#{weight})"
-            to_remove = true
-          elsif (counts["embed"] == 1 && content_length < 75) || counts["embed"] > 1
-            reason = "<embed>s with too short a content length, or too many <embed>s"
-            to_remove = true
-          end
-
-          if to_remove
-            debug("Conditionally cleaned #{name}##{el[:id]}.#{el[:class]} with weight #{weight} and content score #{content_score} because it has #{reason}.")
+          if weight + content_score < 0
             el.remove
+            debug("Conditionally cleaned #{name}##{el[:id]}.#{el[:class]} with weight #{weight} and content score #{content_score} because score + content score was less than zero.")
+          elsif el.text.count(",") < 10
+            counts = %w[p img li a embed input].inject({}) { |m, kind| m[kind] = el.css(kind).length; m }
+            counts["li"] -= 100
+
+            content_length = el.text.strip.length  # Count the text length excluding any surrounding whitespace
+            link_density = get_link_density(el)
+            to_remove = false
+            reason = ""
+
+            if counts["img"] > counts["p"]
+              reason = "too many images"
+              to_remove = true
+            elsif counts["li"] > counts["p"] && name != "ul" && name != "ol"
+              reason = "more <li>s than <p>s"
+              to_remove = true
+            elsif counts["input"] > (counts["p"] / 3).to_i
+              reason = "less than 3x <p>s than <input>s"
+              to_remove = true
+            elsif content_length < (options[:min_text_length] || TEXT_LENGTH_THRESHOLD) && (counts["img"] == 0 || counts["img"] > 2)
+              reason = "too short a content length without a single image"
+              to_remove = true
+            elsif weight < 25 && link_density > 0.2
+              reason = "too many links for its weight (#{weight})"
+              to_remove = true
+            elsif weight >= 25 && link_density > 0.5
+              reason = "too many links for its weight (#{weight})"
+              to_remove = true
+            elsif (counts["embed"] == 1 && content_length < 75) || counts["embed"] > 1
+              reason = "<embed>s with too short a content length, or too many <embed>s"
+              to_remove = true
+            end
+
+            if to_remove
+              debug("Conditionally cleaned #{name}##{el[:id]}.#{el[:class]} with weight #{weight} and content score #{content_score} because it has #{reason}.")
+              el.remove
+            end
           end
         end
       end
 
       # We'll sanitize all elements using a whitelist
-      base_whitelist = @options[:tags] || %w[div p]
+      base_whitelist = @options[:tags] || %w[div p ul hr li h1 h2 h3 h4 h5 b strong a dl dt dd table tbody tr td th]
 
       # Use a hash for speed (don't want to make a million calls to include?)
       whitelist = Hash.new
@@ -279,7 +285,6 @@ module Readability
         # If element is in whitelist, delete all its attributes
         if whitelist[el.node_name]
           el.attributes.each { |a, x| el.delete(a) unless @options[:attributes] && @options[:attributes].include?(a.to_s) }
-
           # Otherwise, replace the element with its contents
         else
           el.swap(el.text)

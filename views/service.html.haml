@@ -1,0 +1,10 @@
+%section#service
+  %header
+    %h1 
+      = @service["title"]
+        
+  %div#service_body
+    = @service.readable.content
+  %div.meta
+    %a#original_url{:href=>@service["url"]} Original page
+    

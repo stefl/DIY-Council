@@ -1,4 +1,4 @@
-gem     "rerun"
+source   "http://rubygems.org"
 gem     "thin"
 gem     "chronic", "=0.2.3"
 gem     "sinatra", "=1.0"

@@ -25,6 +25,10 @@ module DIY
     items.join(" | ")
   end
   
+  def urlize url, council
+    
+  end
+  
   class Council
     
     attr_accessor :council_id
@@ -149,6 +153,10 @@ module DIY
       @data["url"]
     end
     
+    def diy_url
+      DIY.urlize(@data["url"], council)
+    end
+    
     def to_json
       "{'title':#{title},'url':#{url}}"
     end
@@ -185,6 +193,10 @@ module DIY
     
     def url
       @data["url"]
+    end
+    
+    def diy_url
+      DIY.urlize(@data["url"], council)
     end
     
     def to_json

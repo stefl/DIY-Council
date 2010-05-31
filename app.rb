@@ -1,7 +1,7 @@
 require "rubygems"
-require "bundler"
+#require "bundler"
 
-Bundler.setup
+#Bundler.setup
 
 gem     "rack"
 require "rack"

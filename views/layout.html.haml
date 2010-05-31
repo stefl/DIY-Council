@@ -8,6 +8,9 @@
           = " | "
           DIY 
           = @council.name
+        - else
+          DIY 
+          = @council.name
       - else
         DIY Council
     
@@ -49,7 +52,7 @@
               $('#spinner').hide();
               help_me_do_something = ui.item;
               log(ui.item ? ("Selected: " + ui.item.label + " : " + ui.item.value) : "Nothing selected, input was " + this.value);
-            
+              document.location.href = "/#{@council.slug}/page?url=" + ui.item.value
             }
           });
         });
@@ -71,6 +74,8 @@
               %a{:href=> "/#{@council.slug}"}= @council["name"]
             - else
               Council
+            %sup#alpha
+              alpha
             %span#about_this_site
               is an experiment in open local government
           

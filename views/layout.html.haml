@@ -67,7 +67,7 @@
             %a{:href => "/", :class => "logo"} DIY 
             - if @council
               %img{:src=>"#{@council["url"]}/favicon.ico", :width=>16, :height=>16, :id=>"favicon"}
-              %a{:href=> "/councils/#{@council.slug}"}= @council["name"]
+              %a{:href=> "/#{@council.slug}"}= @council["name"]
             - else
               Council
             %span#about_this_site
@@ -76,18 +76,18 @@
         - if @council
           %ul#common_main_menu
             %li
-              %a{:href=>"/councils/#{@council.slug}"}
+              %a{:href=>"/#{@council.slug}"}
                 Main page
             %li
-              %a{:href=>"/councils/#{@council.slug}/near_me"}
+              %a{:href=>"/#{@council.slug}/near_me"}
                 Near me
             %li
-              %a{:href=>"/councils/#{@council.slug}/contact"}
+              %a{:href=>"/#{@council.slug}/contact"}
                 Contact
 
       %section#content 
         - if @council
-          %form#do_something{:action=>"/councils/#{@council.slug}/page", :method=>:get}
+          %form#do_something{:action=>"/#{@council.slug}/page", :method=>:get}
             %label{:for=>"url"}
               %span
                 Show me

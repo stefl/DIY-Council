@@ -6,7 +6,7 @@
         Easy access to your local council starts here
         
       #by_postcode
-        %form#your_postcode{:action=>"councils/find_by_postcode", :method=>:post}
+        %form#your_postcode{:action=>"/find_by_postcode", :method=>:post}
           %label{:for=>"postcode"} 
             My postcode is
             %input{:type=>"text",:size=>"8", :name=>"postcode", :id=>"postcode"}
@@ -17,7 +17,7 @@
         or
       
       #by_name
-        %form#choose_a_council{:action=>"councils", :method=>:post}
+        %form#choose_a_council{:action=>"/councils", :method=>:post}
           %label{:for=>"council"}
             My council is
             %select{:name=>"council"}

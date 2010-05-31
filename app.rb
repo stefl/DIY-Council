@@ -63,7 +63,7 @@ class CostSavingExercise < Sinatra::Base
     haml :home
   end
   
-  post "/councils/find_by_postcode" do
+  post "/find_by_postcode" do
     begin
       @council = DIY::Council.find_by_postcode(params[:postcode])
       STDERR.puts @council.inspect
@@ -74,7 +74,7 @@ class CostSavingExercise < Sinatra::Base
     end
   end
 
-  get "/councils/:council_slug" do |council_slug|
+  get "/:council_slug" do |council_slug|
     @council = DIY::Council.from_slug(council_slug)
     @services = @council.services
     @rss_feed = @council.rss_feed
@@ -82,19 +82,19 @@ class CostSavingExercise < Sinatra::Base
     haml :council
   end
   
-  get "/councils/:council_slug/contact" do |council_slug|
+  get "/:council_slug/contact" do |council_slug|
     @council = DIY::Council.from_slug(council_slug)
     @page_title = "Contact"
     haml :contact
   end
   
-  get "/councils/:council_slug/near_me" do |council_slug|
+  get "/:council_slug/near_me" do |council_slug|
     @council = DIY::Council.from_slug(council_slug)
     @page_title = "Find things near me"
     haml :near_me
   end
   
-  get "/councils/:council_slug/suggest" do |council_slug|
+  get "/:council_slug/suggest" do |council_slug|
     @council = DIY::Council.from_slug(council_slug)
     STDERR.puts params[:term]
     results = @council.suggest(CGI.unescape(params[:term]))
@@ -102,7 +102,7 @@ class CostSavingExercise < Sinatra::Base
     results.to_json
   end
   
-  get "/councils/:council_slug/services/:service_id" do |council_slug,service_id|
+  get "/:council_slug/services/:service_id" do |council_slug,service_id|
     @council = DIY::Council.from_slug(council_slug)
     @services = @council.services
     
@@ -112,15 +112,15 @@ class CostSavingExercise < Sinatra::Base
     haml :service
   end
   
-  get /councils\/(.*)\/page/ do
-    @council = DIY::Council.from_slug(params[:captures][0])
+  get "/:council_slug/page" do |council_slug|
+    @council = DIY::Council.from_slug(council_slug)
     @page = @council.get_page(params[:url])
     @page_title = "#{@page.title}"
     haml :page
   end
   
   post "/councils" do
-    redirect "/councils/#{params["council"]}"
+    redirect "/#{params["council"]}"
   end
   
   get '/css/:file' do

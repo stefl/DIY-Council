@@ -65,7 +65,7 @@ module DIY
     end
     
     def flickr_feed
-      @flickr_feed ||= Weary.get("http://www.degraeve.com/flickr-rss/rss.php?tags=#{tag}&tagmode=all&sort=date-posted-desc&num=25").perform.parse.first.last["channel"]["item"]
+      @flickr_feed ||= Weary.get("http://www.degraeve.com/flickr-rss/rss.php?tags=#{tag}&tagmode=all&sort=date-posted-desc&num=25").perform.parse.first.last["channel"]["item"] rescue nil
     end
     
     def suggest terms

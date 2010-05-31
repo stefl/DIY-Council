@@ -38,7 +38,7 @@ require 'open-uri'
 $: << "lib"
 
 require 'readability'
-require "openlylocal"
+require "diy"
 
 class CostSavingExercise < Sinatra::Base
   set :root, File.dirname(__FILE__)
@@ -56,26 +56,38 @@ class CostSavingExercise < Sinatra::Base
   get "/" do
     @page_title = "DIY Council"
     
-    @councils = OpenlyLocal::Council.all rescue []
+    @councils = DIY::Council.all rescue []
     
     haml :home
   end
   
   post "/councils/find_by_postcode" do
-    @council = OpenlyLocal::Council.find_by_postcode(params[:postcode])
-    STDERR.puts @council.inspect
-    redirect "/councils/#{@council["id"]}"
+    begin
+      @council = DIY::Council.find_by_postcode(params[:postcode])
+      STDERR.puts @council.inspect
+      redirect "/councils/#{@council["id"]}"
+    rescue
+      redirect "/"
+    end
   end
 
   get "/councils/:council_id" do |council_id|
-    @council = OpenlyLocal::Council.get(council_id)
+    @council = DIY::Council.get(council_id)
     @services = @council.services
     @rss_feed = @council.rss_feed
     haml :council
   end
   
+  get "/councils/:council_id/suggest" do |council_id|
+    @council = DIY::Council.get(council_id)
+    STDERR.puts params[:term]
+    results = @council.suggest(CGI.unescape(params[:term]))
+    content_type :json
+    results.to_json
+  end
+  
   get "/councils/:council_id/services/:service_id" do |council_id,service_id|
-    @council = OpenlyLocal::Council.get(council_id)
+    @council = DIY::Council.get(council_id)
     @services = @council.services
     
     @service = @services.select{|a| a["id"].to_s == service_id.to_s}.first
@@ -85,7 +97,7 @@ class CostSavingExercise < Sinatra::Base
   end
   
   get /councils\/(.*)\/page\/(.*)/ do
-    @council = OpenlyLocal::Council.get(params[:captures][0])
+    @council = DIY::Council.get(params[:captures][0])
     base_url = URI.parse(@council.url.strip('/'))
     res = Net::HTTP.start(feed_base_url.host, feed_base_url.port) {|http|
       http.get @council.url.strip('/') + "/" + params[:captures][1]

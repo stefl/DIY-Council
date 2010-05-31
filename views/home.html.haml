@@ -4,8 +4,6 @@
       
       
     #by_postcode
-      
-        
       %form#your_postcode{:action=>"councils/find_by_postcode", :method=>:post}
         %label{:for=>"postcode"} 
           My postcode is
@@ -23,3 +21,4 @@
                 = council["name"]
           %button{:type=>"submit", :name=>"Go"}
             %span so let's go
+            

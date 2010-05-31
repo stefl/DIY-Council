@@ -3,8 +3,8 @@
     %h1 
       = @service["title"]
         
-  %div#service_body
+  %section#service_body
     = @service.readable.content
-  %div.meta
+  %section#meta
     %a#original_url{:href=>@service["url"]} Original page
     

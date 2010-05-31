@@ -195,59 +195,7 @@ nav#masthead
       
         color: black
       
-    ul
-      float: left
-      width= !unit*5+!gutter*4
     
-      li
-        float: left
-        width= !unit
-      
-        margin= 0 !gutter 0 0
-      
-        &:last-child
-          margin-right: 0
-      
-        a
-          position: relative
-          display: block
-        
-          padding: 5px 0
-        
-          text-align: center
-          text-decoration: none
-          text-shadow: 1px 1px 1px #eee
-        
-          color: #333
-          background: rgba(255, 255, 255, 0.75)
-          +border-radius(10px, 10px, 10px, 10px)
-        
-          &:hover
-            text-shadow: none
-
-            color: black
-            background: white
-        
-          small
-            position: absolute
-            right: -4px
-            top: -4px
-            width: 18px
-            height: 18px
-          
-            font-size: 11px
-            font-weight: normal
-          
-            +gradient(#f00, #f00-#666)
-            border: 1px solid white
-            +border-radius(10px, 10px, 10px, 10px)
-            +box-shadow(black, 0, 0, 2px)
-          
-        strong a
-          text-shadow: none
-        
-          color: black
-          background: white
       
 div#content
   +expand
@@ -997,9 +945,65 @@ dl
     margin-bottom: 0.75em
 ul
   margin-bottom: 0.75em
-h2, h3, h4, h5
-  margin-bottom:0.75em
+h1,h2, h3, h4, h5
+  margin-bottom: 0.75em !important
 input#postcode
   width: 8em !important
 #about_this_site
   color: #aba
+#by_postcode label, #by_name label, #by_postcode select, #by_name select
+  font-size: 125%
+  font-weight: bold
+  
+nav#common_main_menu
+  ul
+  
+    li
+      float: left
+    
+      margin= 0 !gutter 0 0
+    
+      &:last-child
+        margin-right: 0
+    
+      a
+        position: relative
+        display: block
+      
+        padding: 5px 0
+      
+        text-align: center
+        text-decoration: none
+        text-shadow: 1px 1px 1px #eee
+      
+        color: #333
+        background: rgba(255, 255, 255, 0.75)
+        +border-radius(10px, 10px, 10px, 10px)
+      
+        &:hover
+          text-shadow: none
+
+          color: black
+          background: white
+      
+        small
+          position: absolute
+          right: -4px
+          top: -4px
+          width: 18px
+          height: 18px
+        
+          font-size: 11px
+          font-weight: normal
+        
+          +gradient(#f00, #f00-#666)
+          border: 1px solid white
+          +border-radius(10px, 10px, 10px, 10px)
+          +box-shadow(black, 0, 0, 2px)
+        
+      strong a
+        text-shadow: none
+      
+        color: black
+        background: white
+      

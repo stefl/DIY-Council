@@ -285,6 +285,7 @@ module Readability
         # If element is in whitelist, delete all its attributes
         if whitelist[el.node_name]
           el.attributes.each { |a, x| el.delete(a) unless @options[:attributes] && @options[:attributes].include?(a.to_s) }
+          #todo - kill links to #top etc.
           # Otherwise, replace the element with its contents
         else
           el.swap(el.text)

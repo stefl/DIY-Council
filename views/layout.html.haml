@@ -72,17 +72,19 @@
               %a{:href=>"/councils/#{@council.id}/contact"}
 
       %div#content 
-        %form#do_something{:action=>"/councils/#{@council.id}/page", :method=>:get}
-          %label{:for=>"url"}
-            %span
-              Show me
-            %input{:type=>"text",:size=>"48", :name=>"url", :id=>"something", :value=>"something I'd like to know about"}
-            %img{:src=>"/ajax-loader.gif", :id=>"spinner"}
-            %button{:type=>"submit", :name=>"please"}
-              %span please
-            %span#try
-              Try "council tax", "libraries", "park", "rates"...
-        = yield
+        - if @council
+          %form#do_something{:action=>"/councils/#{@council.id}/page", :method=>:get}
+            %label{:for=>"url"}
+              %span
+                Show me
+              %input{:type=>"text",:size=>"48", :name=>"url", :id=>"something", :value=>"something I'd like to know about"}
+              %img{:src=>"/ajax-loader.gif", :id=>"spinner"}
+              %button{:type=>"submit", :name=>"please"}
+                %span please
+              %span#try
+                Try "council tax", "libraries", "park"...
+        %div#main_content
+          = yield
       
       %div#log
       

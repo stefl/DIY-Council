@@ -67,6 +67,7 @@ class CostSavingExercise < Sinatra::Base
       STDERR.puts @council.inspect
       redirect "/councils/#{@council["id"]}"
     rescue
+      flash[:errors] = "Sorry - I can't find the council for that postcode"
       redirect "/"
     end
   end

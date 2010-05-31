@@ -44,6 +44,23 @@ module DIY
       @data[ind]
     end
     
+    def slug
+      @data["title"].downcase.gsub("'","").gsub(" ","_").gsub("-","_")
+    end
+    
+    def self.from_slug the_slug
+      found = nil
+      Council.all.each do |c|
+        unless found
+          if the_slug == c.slug
+            found = c
+          end
+        end
+      end
+      nil
+      found unless found.blank?
+    end
+    
     def initialize(id)
       self.council_id = id
     end
@@ -57,7 +74,7 @@ module DIY
     end
     
     def rss_feed
-      nil #@rss_feed ||= Weary.get(rss_feed_url).perform.parse.first.last["channel"]["item"] if rss_feed_url  rescue []    
+      @rss_feed ||= Weary.get(rss_feed_url).perform.parse.first.last["channel"]["item"] if rss_feed_url
     end
     
     def tag

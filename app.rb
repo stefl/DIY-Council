@@ -76,7 +76,21 @@ class CostSavingExercise < Sinatra::Base
     @council = DIY::Council.get(council_id)
     @services = @council.services
     @rss_feed = @council.rss_feed
+    @page_title = "DIY #{@council.name}"
+    
     haml :council
+  end
+  
+  get "/councils/:council_id/contact" do |council_id|
+    @council = DIY::Council.get(council_id)
+    @page_title = "Contact | DIY #{@council.name}"
+    haml :contact
+  end
+  
+  get "/councils/:council_id/near_me" do |council_id|
+    @council = DIY::Council.get(council_id)
+    @page_title = "Find things near me | DIY #{@council.name}"
+    haml :near_me
   end
   
   get "/councils/:council_id/suggest" do |council_id|
@@ -93,13 +107,14 @@ class CostSavingExercise < Sinatra::Base
     
     @service = @services.select{|a| a["id"].to_s == service_id.to_s}.first
     STDERR.puts @service.inspect
-    
+    @page_title = "#{@service.title} | DIY #{@council.name}"
     haml :service
   end
   
   get /councils\/(.*)\/page/ do
     @council = DIY::Council.get(params[:captures][0])
     @page = @council.get_page(params[:url])
+    @page_title = "#{@page.title} | DIY #{@council.name}"
     haml :page
   end
   

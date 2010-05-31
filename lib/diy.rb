@@ -14,6 +14,7 @@ YAHOO_BOSS_APP_ID = "7gATyJ7V34FoqrIuRvHAAwMYi_L7gp2ZRFAoTP5sZzQlsNzmC1mjv.2yfvz
 module DIY
   
   def self.titleize title, council
+    return "" if  title.blank?
     council_name = council["name"]
     separator = nil
     common_separators = [" - ", ": ", " | ", ". ", " :: "]
@@ -106,6 +107,10 @@ module DIY
     
     def info
       @data ||= self.load
+    end
+    
+    def name
+      @data["name"]
     end
     
     def load

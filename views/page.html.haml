@@ -1,0 +1,9 @@
+%section#page
+  %header
+    %h1 
+      = @page["title"]
+        
+  %section#page_body
+    = @page.readable.content
+  %section#meta
+    %a#original_url{:href=>@page["url"]} Original page

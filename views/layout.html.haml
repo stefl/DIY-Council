@@ -56,7 +56,7 @@
           %p
             %a{:href => "/", :class => "logo"} DIY 
             - if @council
-              %img{:src=>"#{@council["url"]}/favicon.ico"}
+              %img{:src=>"#{@council["url"]}/favicon.ico", :width=>32, :height=>32, :id=>"favicon"}
               %a{:href=> "/councils/#{@council.id}"}
                 = @council["name"]
             - else
@@ -67,9 +67,14 @@
         - if @council
           %ul#common_main_menu
             %li
+              %a{:href=>"/councils/#{@council.id}"}
+                Main page
+            %li
               %a{:href=>"/councils/#{@council.id}/near_me"}
+                Near me
             %li
               %a{:href=>"/councils/#{@council.id}/contact"}
+                Contact
 
       %div#content 
         - if @council

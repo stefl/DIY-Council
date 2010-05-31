@@ -132,7 +132,7 @@ div#content
   background-color: white
   +border-radius(10px, 10px, 10px, 10px)
   padding: 10px
-  
+  margin-top: 0
   section
     h1      
       font-size: 18px
@@ -338,55 +338,40 @@ input#postcode
     margin-left: 3em
 #main_content
   padding: 0.5em
-nav#common_main_menu
   ul
+    padding-left: 1.5em
+#favicon
+  vertical-align: middle
+ul#common_main_menu
+  margin-bottom: 0
+  padding-left: 1em
+  +expand
+  li
+    +expand
+    width: 20%
+    float: left
+    margin-bottom: 0
+    margin-right: 0.5em
+    &:last-child
+      margin-right: 0
   
-    li
-      float: left
+    a
+      position: relative
+      display: block
     
-      margin= 0 !gutter 0 0
+      padding: 5px 0
     
-      &:last-child
-        margin-right: 0
+      text-align: center
+      text-decoration: none
+      text-shadow: 1px 1px 1px #eee
     
-      a
-        position: relative
-        display: block
-      
-        padding: 5px 0
-      
-        text-align: center
-        text-decoration: none
-        text-shadow: 1px 1px 1px #eee
-      
-        color: #333
-        background: rgba(255, 255, 255, 0.75)
-        +border-radius(10px, 10px, 10px, 10px)
-      
-        &:hover
-          text-shadow: none
-
-          color: black
-          background: white
-      
-        small
-          position: absolute
-          right: -4px
-          top: -4px
-          width: 18px
-          height: 18px
-        
-          font-size: 11px
-          font-weight: normal
-        
-          +gradient(#f00, #f00-#666)
-          border: 1px solid white
-          +border-radius(10px, 10px, 10px, 10px)
-          +box-shadow(black, 0, 0, 2px)
-        
-      strong a
+      color: #333
+      background: rgba(255, 255, 255, 0.75)
+      +border-radius(10px, 10px, 0px, 0px)
+    
+      &:hover
         text-shadow: none
-      
         color: black
         background: white
+
       

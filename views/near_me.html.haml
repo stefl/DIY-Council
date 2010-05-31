@@ -52,7 +52,7 @@
          localSearch = new GSmapSearchControl(
                document.getElementById("mapsearch"),
 
-="'" + @council["name"] + " uk',"
+="'" + @council.slug.gsub("_"," ") + " uk',"
 :plain
              options
              );

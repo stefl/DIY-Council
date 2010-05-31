@@ -18,6 +18,7 @@
     %script{:src => "/js/jquery-ui-1.8.1.custom.min.js", :type => "text/javascript"}
     %script{:src => "/js/jquery.clear_search.js", :type => "text/javascript"}
     %script{:src => "/js/jquery.cycle.min.js", :type => "text/javascript"}
+    %script{:src => "http://wr.readspeaker.com/webreader/webreader.js.php?cid=8BJPVRSM92UWJH4FZRMB8FBZ5Z8UEY9D", :type => "text/javascript"}
 
     %link{:href => "/css/screen.css", :media => 'screen', :rel => 'stylesheet', :type => 'text/css'}/
     %link{:href => "/jqcss/ui-lightness/jquery-ui-1.8.1.custom.css", :media => 'screen', :rel => 'stylesheet', :type => 'text/css'}/
@@ -84,7 +85,13 @@
             %li
               %a{:href=>"/#{@council.slug}/contact"}
                 Contact
-
+      #accessibility
+        #listen
+          %a{:href=>"http://wr.readspeaker.com/webreader/webreader.php?cid=8BJPVRSM92UWJH4FZRMB8FBZ5Z8UEY9D&amp;t=web_free&amp;title=readspeaker&amp;url=", :onclick=>"readpage(this.href+escape(document.location.href),1); return false;"}
+            Listen
+              
+          #WR_1
+        
       %section#content 
         - if @council
           %form#do_something{:action=>"/#{@council.slug}/page", :method=>:get}
@@ -102,7 +109,9 @@
             %h1#page_title
               = @page_title
         %section#main_content
+          / RSPEAK_START 
           = yield
+          / RSPEAK_STOP 
       
       %div#log
       

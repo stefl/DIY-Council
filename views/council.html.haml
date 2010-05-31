@@ -1,17 +1,19 @@
 - if @council.flickr_feed && @council.flickr_feed.entries.size > 0
+  %h2
+    A snapshot of our city
+  .slideshow
+    - @council.flickr_feed.entries.each do |flickr_image|
+      .flickr_image
+      
+        - STDERR.puts @council.flickr_feed.inspect
+        = flickr_image["description"].gsub('alt=""', 'alt="' + flickr_image["title"] + "on Flickr" + '"')
 
-  #flickr_image
-    - flickr_image = @council.flickr_feed.entries.first
-    - STDERR.puts @council.flickr_feed.inspect
-    = flickr_image["description"].gsub('alt=""', 'alt="' + flickr_image["title"] + "on Flickr" + '"')
-
-    %p
-      &#147;
-      %a{:href=>flickr_image["link"]}
-        = flickr_image["title"]
-      &#148;
-
-      on Flickr        
+        %p
+          &#147;
+          %a{:href=>flickr_image["link"]}
+            = flickr_image["title"]
+          &#148;
+          on Flickr        
 %h2
   News
 %ul#latest_news

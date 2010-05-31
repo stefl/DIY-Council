@@ -9,6 +9,7 @@
     %script{:src => "/js/jquery-1.4.2.min.js", :type => "text/javascript"}
     %script{:src => "/js/jquery-ui-1.8.1.custom.min.js", :type => "text/javascript"}
     %script{:src => "/js/jquery.clear_search.js", :type => "text/javascript"}
+    %script{:src => "/js/jquery.cycle.min.js", :type => "text/javascript"}
 
     %link{:href => "/css/screen.css", :media => 'screen', :rel => 'stylesheet', :type => 'text/css'}/
     %link{:href => "/jqcss/ui-lightness/jquery-ui-1.8.1.custom.css", :media => 'screen', :rel => 'stylesheet', :type => 'text/css'}/
@@ -17,6 +18,8 @@
       var help_me_do_something;
       
       $(function() {
+        $('.slideshow').cycle({ fx: 'fade' });
+           
         function log(message) {
           $("<div/>").text(message).prependTo("#log");
           $("#log").attr("scrollTop", 0);
@@ -67,17 +70,18 @@
               %a{:href=>"/councils/#{@council.id}/near_me"}
             %li
               %a{:href=>"/councils/#{@council.id}/contact"}
-          %form#do_something{:action=>"/councils/#{@council.id}/page", :method=>:get}
-            %label{:for=>"url"}
-              %span
-                Show me
-              %input{:type=>"text",:size=>"48", :name=>"url", :id=>"something", :value=>"something I'd like to know about"}
-              %img{:src=>"/ajax-loader.gif", :id=>"spinner"}
-              %button{:type=>"submit", :name=>"please"}
-                %span please
-              %span#try
-                Try "council tax", "libraries", "park", "rates"...
-      %div#content                      
+
+      %div#content 
+        %form#do_something{:action=>"/councils/#{@council.id}/page", :method=>:get}
+          %label{:for=>"url"}
+            %span
+              Show me
+            %input{:type=>"text",:size=>"48", :name=>"url", :id=>"something", :value=>"something I'd like to know about"}
+            %img{:src=>"/ajax-loader.gif", :id=>"spinner"}
+            %button{:type=>"submit", :name=>"please"}
+              %span please
+            %span#try
+              Try "council tax", "libraries", "park", "rates"...
         = yield
       
       %div#log

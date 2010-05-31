@@ -76,6 +76,7 @@ class CostSavingExercise < Sinatra::Base
 
   get "/:council_slug" do |council_slug|
     @council = DIY::Council.from_slug(council_slug)
+    raise Sinatra::NotFound if @council.blank?
     @services = @council.services
     @rss_feed = @council.rss_feed
     
@@ -119,8 +120,17 @@ class CostSavingExercise < Sinatra::Base
     haml :page
   end
   
+  get "/:council_slug/about" do |council_slug|
+    @council = DIY::Council.from_slug(council_slug)
+    haml :about
+  end
+  
   post "/councils" do
     redirect "/#{params["council"]}"
+  end
+  
+  get '/favicon' do
+    redirect '/images/favicon.ico'
   end
   
   get '/css/:file' do

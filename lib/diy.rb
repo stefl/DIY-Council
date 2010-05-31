@@ -17,7 +17,7 @@ module DIY
     return "" if  title.blank?
     council_name = council["name"]
     separator = nil
-    common_separators = [" - ", ": ", " | ", ". ", " :: "]
+    common_separators = [" - ", " • ", " &bull; ", ": ", " | ", ". ", " :: "]
     common_separators.each{|sep| separator = sep if title.include?(sep)}
     if separator
       items = title.split(separator)
@@ -68,7 +68,7 @@ module DIY
     end
     
     def services
-      @services ||= Weary.get("http://openlylocal.com/services.json?council_id=#{council_id}").perform.parse.map{|a| Service.new(a["service"], self)}
+      @services ||= Weary.get("http://openlylocal.com/services.json?council_id=#{council_id}").perform.parse.map{|a| Service.new(a["service"], self)} rescue []
     end
     
     def rss_feed_url
@@ -101,8 +101,8 @@ module DIY
     
     def search terms 
       terms = self.class.clean_terms terms
-      results = Weary.get("http://boss.yahooapis.com/ysearch/web/v1/site:#{@data["url"]}%20#{terms}?appid=#{YAHOO_BOSS_APP_ID}&type=html&format=json").perform.parse
-      pages = results.first.last["resultset_web"].map{|a| Page.new(a, self)}
+      results = Weary.get("http://boss.yahooapis.com/ysearch/web/v1/site:#{@data["url"]}%20#{terms}?appid=#{YAHOO_BOSS_APP_ID}&count=5&type=html&format=json").perform.parse
+      pages = results.first.last["resultset_web"].map{|a| Page.new(a, self)} rescue []
       services.select{|a| a["title"].downcase.include?(terms)} + pages
     end
     

@@ -53,6 +53,8 @@
               help_me_do_something = ui.item;
               log(ui.item ? ("Selected: " + ui.item.label + " : " + ui.item.value) : "Nothing selected, input was " + this.value);
               document.location.href = "/#{@council.slug}/page?url=" + ui.item.value
+              $('#spinner').show();
+              this.value = ui.item.value;
             }
           });
         });
@@ -105,8 +107,8 @@
                 Show me
               %input{:type=>"text",:size=>"48", :name=>"url", :id=>"something", :value=>"something I'd like to know about"}
               %img{:src=>"/ajax-loader.gif", :id=>"spinner"}
-              %button{:type=>"submit", :name=>"please"}
-                %span please
+              / %button{:type=>"submit", :name=>"please"}
+              /                 %span please
               %span#try
                 Try "council tax", "libraries", "park"...
         - if @page_title

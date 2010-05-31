@@ -63,6 +63,12 @@ class CostSavingExercise < Sinatra::Base
     haml :home
   end
   
+  get "/members/:member_id" do |member_id|
+    content_type :html
+    @member = DIY::Member.get(member_id)
+    haml :member, :layout=>false
+  end
+  
   post "/find_by_postcode" do
     begin
       @council = DIY::Council.find_by_postcode(params[:postcode])

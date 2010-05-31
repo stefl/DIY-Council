@@ -1,15 +1,57 @@
-%h2
-  = @council["telephone"]
-%h2
-  Address
-%p= @council["address"].gsub(",", "<br />")
+:javascript
+  $(document).ready(function() {
+    $("#tabs").tabs();
+  });
 
-- if @council["twitter"]
-  %h2
-    %a{:href=>"http://twitter.com/#{@council["twitter"]}"}
-    = "@#{@council["twitter"]} on Twitter"
-%h2
-  My local councillor
+
+#tabs
+  %ul
+    %li
+      %a{:href=>"#general"}
+        %span
+          Get in touch
+    %li
+      %a{:href=>"#councillors"}
+        %span
+          Councillors
+    %li
+      %a{:href=>"#departments"}
+        %span
+          Departments
+  #general
+    %h2
+      Get in touch with the council
+      
+    %h3
+      = @council["telephone"]
+    %h3
+      Address
+    %p= @council["address"].gsub(",", "<br />")
+
+    - if @council["twitter"]
+      %h2
+        %a{:href=>"http://twitter.com/#{@council["twitter"]}"}
+        = "@#{@council["twitter"]} on Twitter"
+  #councillors
+    %h2
+      Councillors
+    
+    #members
+      - @council.members.each do |member|
+        .member{:id=>"member_#{member["id"]}"}
+          %h3
+            %a{:href=>"#", :onclick=>"$('#member_display').load('/members/" + member['id'].to_s + "'); return false;"}= "#{member["first_name"]} #{member["last_name"]}"
+          %small
+            = member["party"]["name"]
+            |
+            = member["ward"]["name"]
+    #member_display
+  #departments
+    %h2
+      Departments
+    %p
+      To be honest, this is probably beyond what we can do yet.
+      
+    %p
+      But wouldn't it be great if you could contact the right person in the right person without switchboard tennis?
   
-%p
-  In progress...

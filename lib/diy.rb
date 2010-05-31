@@ -101,7 +101,7 @@ module DIY
     
     def search terms 
       terms = self.class.clean_terms terms
-      results = Weary.get("http://boss.yahooapis.com/ysearch/web/v1/site:#{@data["url"]}%20#{terms}?appid=#{YAHOO_BOSS_APP_ID}&count=5&type=html&format=json").perform.parse
+      results = Weary.get("http://boss.yahooapis.com/ysearch/web/v1/site:#{@data["url"]}%20#{terms}?appid=#{YAHOO_BOSS_APP_ID}&count=8&type=html&format=json").perform.parse
       pages = results.first.last["resultset_web"].map{|a| Page.new(a, self)} rescue []
       services.select{|a| a["title"].downcase.include?(terms)} + pages
     end
@@ -154,6 +154,30 @@ module DIY
     
     def id
       @data["id"]
+    end
+    
+    def members
+      m = Weary.get("http://openlylocal.com/members.json?council_id=#{self.id}").perform.parse.map{|a| a["member"]} rescue m=[]
+      STDERR.puts m.inspect
+      m
+    end
+  end
+  
+  class Member
+    attr_accessor :data
+    
+    def initialize(d)
+      @data = d
+    end
+    
+    def [](ind)
+      @data[ind]
+    end
+    
+    def self.get id
+      m = Member.new(Weary.get("http://openlylocal.com/members/#{id}.json").perform.parse["member"])
+      STDERR.puts m.inspect
+      m
     end
   end
   

@@ -48,17 +48,23 @@
                idleMapZoom : GSmapSearchControl.ACTIVE_MAP_ZOOM+1,
                activeMapZoom : GSmapSearchControl.ACTIVE_MAP_ZOOM+1
                }
-
+         
+         var center = new Object(); 
+= "center.lat = #{@council["lat"]};" 
+= "center.lng = #{@council["lng"]};"
+:plain                     
          localSearch = new GSmapSearchControl(
-               document.getElementById("mapsearch"),
-
-="'" + @council.slug.gsub("_"," ") + " uk',"
-:plain
-             options
-             );
-
+           document.getElementById("mapsearch"),
+           center,
+           options
+         );
      }
      // arrange for this function to be called during body.onload
      // event processing
      $(document).ready(function(){LoadMapSearchControl()});
    </script>
+
+%h2
+  Search for anything local to you
+%p
+  You could try: library, swimming pool, creche, sports centre, job center

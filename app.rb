@@ -67,7 +67,7 @@ class CostSavingExercise < Sinatra::Base
     begin
       @council = DIY::Council.find_by_postcode(params[:postcode])
       STDERR.puts @council.inspect
-      redirect "/councils/#{@council.slug}"
+      redirect "/#{@council.slug}"
     rescue
       flash[:errors] = "Sorry - I can't find the council for that postcode"
       redirect "/"

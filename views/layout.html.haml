@@ -36,7 +36,7 @@
           }
           $("#spinner").hide();
           $("#something").autocomplete({
-            source: "/councils/#{@council.slug}/suggest",
+            source: "/#{@council.slug}/suggest",
             minLength: 2,
             search: function(event, ui) { 
               $('#spinner').show();

@@ -21,11 +21,18 @@
           $("<div/>").text(message).prependTo("#log");
           $("#log").attr("scrollTop", 0);
         }
-
+        $("#spinner").hide();
         $("#something").autocomplete({
           source: "/councils/#{@council.id}/suggest",
           minLength: 2,
+          search: function(event, ui) { 
+            $('#spinner').show();
+          },
+          open: function(event, ui) {
+            $('#spinner').hide();
+          },
           select: function(event, ui) {
+            $('#spinner').hide();
             help_me_do_something = ui.item;
             log(ui.item ? ("Selected: " + ui.item.label + " : " + ui.item.value) : "Nothing selected, input was " + this.value);
             
@@ -61,11 +68,15 @@
             %li
               %a{:href=>"/councils/#{@council.id}/contact"}
           %form#do_something{:action=>"/councils/#{@council.id}/page", :method=>:get}
-            %label{:for=>"url"} 
-              Help me
-              %input{:type=>"text",:size=>"32", :name=>"url", :id=>"something", :value=>"do something"}
+            %label{:for=>"url"}
+              %span
+                Show me
+              %input{:type=>"text",:size=>"48", :name=>"url", :id=>"something", :value=>"something I'd like to know about"}
+              %img{:src=>"/ajax-loader.gif", :id=>"spinner"}
               %button{:type=>"submit", :name=>"please"}
                 %span please
+              %span#try
+                Try "council tax", "libraries", "park", "rates"...
       %div#content                      
         = yield
       

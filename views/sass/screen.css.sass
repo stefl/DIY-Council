@@ -59,7 +59,6 @@ body
     button
       overflow: visible
       +box-sizing(content-box)
-      width= !unit*3-!gutter*2
 
       margin= 0
       padding= 9px !gutter
@@ -79,10 +78,8 @@ body
       &:hover
         +gradient(#00baff, #00baff)
     
-div#page
-  width= !unit*9+!gutter*8
-  
-  margin: 0 auto
+div#page  
+  margin: 1.5em
     
 div#message
   z-index: 1000
@@ -305,7 +302,35 @@ input#postcode
 #by_postcode label, #by_name label, #by_postcode select, #by_name select
   font-size: 125%
   font-weight: bold
-  
+#get_started
+  +border-radius(6px, 6px, 6px, 6px)
+  background-color: #eee
+  padding: 1.5em
+  margin: 1.5em
+#either_or
+  font-size: 125%
+  color: #666
+  margin-bottom: 0.5em
+#choose_a_council
+  select
+    padding: 0.25em
+    option
+      font-size: 125%
+#do_something
+  label
+    input
+      font-size: 125%
+      margin-top: -0.2em
+    span
+      font-size: 125%
+  #spinner
+    z-index: 3
+    margin-left: -24px
+    margin-top: 4px
+  #try
+    font-size: 100%
+    color: #888
+    margin-left: 3em
 nav#common_main_menu
   ul
   

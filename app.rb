@@ -96,13 +96,10 @@ class CostSavingExercise < Sinatra::Base
     haml :service
   end
   
-  get /councils\/(.*)\/page\/(.*)/ do
+  get /councils\/(.*)\/page/ do
     @council = DIY::Council.get(params[:captures][0])
-    base_url = URI.parse(@council.url.strip('/'))
-    res = Net::HTTP.start(feed_base_url.host, feed_base_url.port) {|http|
-      http.get @council.url.strip('/') + "/" + params[:captures][1]
-    }
-    res.body
+    @page = @council.get_page(params[:url])
+    haml :page
   end
   
   post "/councils" do

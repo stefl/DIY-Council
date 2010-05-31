@@ -60,10 +60,10 @@
               %a{:href=>"/councils/#{@council.id}/near_me"}
             %li
               %a{:href=>"/councils/#{@council.id}/contact"}
-          %form#do_something{:action=>"/councils/#{@council.id}/do", :method=>:get}
-            %label{:for=>"something"} 
+          %form#do_something{:action=>"/councils/#{@council.id}/page", :method=>:get}
+            %label{:for=>"url"} 
               Help me
-              %input{:type=>"text",:size=>"32", :name=>"something", :id=>"something", :value=>"do something"}
+              %input{:type=>"text",:size=>"32", :name=>"url", :id=>"something", :value=>"do something"}
               %button{:type=>"submit", :name=>"please"}
                 %span please
       %div#content                      

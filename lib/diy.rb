@@ -95,6 +95,10 @@ module DIY
       @data ||= Weary.get("http://openlylocal.com/councils/#{council_id}.json").perform.parse["council"]
     end
     
+    def get_page url
+      Page.new({"url"=>url, "title"=>nil}, self)
+    end
+    
     def self.all
       Weary.get("http://openlylocal.com/councils.json").perform.parse.map{|a| a["council"]}
     end

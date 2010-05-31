@@ -223,6 +223,10 @@ module Readability
       node.css("p").each do |elem|
         elem.remove if elem.content.strip.empty?
       end
+      
+      node.css("div").each do |elem|
+        elem.remove if elem.content.strip.empty?
+      end
 
       # Conditionally clean <table>s, <ul>s, and <div>s
       if 1==0
@@ -292,7 +296,7 @@ module Readability
         end
 
       end
-
+      
       # Get rid of duplicate whitespace
       node.to_html.gsub(/[\r\n\f]+/, "\n" ).gsub(/[\t ]+/, " ").gsub(/&nbsp;/, " ")
     end

@@ -4,15 +4,16 @@
       A snapshot of our area
     .slideshow
       - @council.flickr_feed.entries.each do |flickr_image|
-        .flickr_image
+        - if flickr_image.class == Hash
+          .flickr_image
       
-          - STDERR.puts @council.flickr_feed.inspect
-          = flickr_image["description"].gsub('alt=""', 'alt="' + flickr_image["title"] + "on Flickr" + '"')
+            - STDERR.puts @council.flickr_feed.inspect
+            = flickr_image["description"].gsub('alt=""', 'alt="' + flickr_image["title"] + "on Flickr" + '"')
 
-          %p
-            %a{:href=>flickr_image["link"]}
-              = flickr_image["title"]
-            on Flickr       
+            %p
+              %a{:href=>flickr_image["link"]}
+                = flickr_image["title"]
+              on Flickr       
 
 - if @council.rss_feed_url   
   #news          

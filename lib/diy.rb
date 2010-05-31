@@ -42,7 +42,7 @@ module DIY
     end
     
     def slug
-      @slug ||= @data["name"].downcase.gsub("&", "and").gsub("royal borough of","").gsub("london borough of","").gsub("district","").gsub("council of the","").gsub("city and county of", "").gsub("city of", "").gsub("city","").gsub("metropolitan","").gsub("county","").gsub("borough of", "").gsub("borough","").gsub("council", "").gsub("'","").strip.gsub(" ","_").gsub("-","_")
+      @slug ||= @data["name"].downcase.gsub("&", "and").gsub("royal borough of","").gsub("london borough of","").gsub("district","").gsub("council of the","").gsub("city and county of", "").gsub("city of", "").gsub("city","").gsub("metropolitan","").gsub("county","").gsub("borough of", "").gsub(" borough"," ").gsub("council", "").gsub("'","").strip.gsub(" ","_").gsub("-","_")
     end
     
     def self.from_slug the_slug

@@ -1,7 +1,6 @@
 %section#home
   %header
       
-      
     #get_started
       %h1
         Easy access to your local council starts here
@@ -25,7 +24,7 @@
               %option{:value=>0}
                 one of these...
               - @councils.each do |council|
-                %option{:value=>council["id"]} 
+                %option{:value=>council.slug} 
                   = council["name"]
             %button{:type=>"submit", :name=>"Go"}
               %span so let's go

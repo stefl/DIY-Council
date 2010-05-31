@@ -1,7 +1,15 @@
 = "<!DOCTYPE html>"
 %html{:lang => "en", :xmlns => "http://www.w3.org/1999/xhtml"}
   %head
-    %title= @page_title
+    %title
+      - if @council
+        - if @page_title
+          = @page_title
+          = " | "
+          DIY 
+          = @council.name
+      - else
+        DIY Council
     
     %meta{:charset => "utf-8"}/
     %meta{:name => "MSSmartTagsPreventParsing", :content => "true"}/
@@ -14,34 +22,36 @@
     %link{:href => "/css/screen.css", :media => 'screen', :rel => 'stylesheet', :type => 'text/css'}/
     %link{:href => "/jqcss/ui-lightness/jquery-ui-1.8.1.custom.css", :media => 'screen', :rel => 'stylesheet', :type => 'text/css'}/
     
-    :javascript
-      var help_me_do_something;
+    - if @council
+      <script type="text/javascript"></script>
+      :javascript
+        var help_me_do_something;
       
-      $(function() {
-        $('.slideshow').cycle({ fx: 'fade' });
+        $(function() {
+          $('.slideshow').cycle({ fx: 'fade' });
            
-        function log(message) {
-          $("<div/>").text(message).prependTo("#log");
-          $("#log").attr("scrollTop", 0);
-        }
-        $("#spinner").hide();
-        $("#something").autocomplete({
-          source: "/councils/#{@council.id}/suggest",
-          minLength: 2,
-          search: function(event, ui) { 
-            $('#spinner').show();
-          },
-          open: function(event, ui) {
-            $('#spinner').hide();
-          },
-          select: function(event, ui) {
-            $('#spinner').hide();
-            help_me_do_something = ui.item;
-            log(ui.item ? ("Selected: " + ui.item.label + " : " + ui.item.value) : "Nothing selected, input was " + this.value);
-            
+          function log(message) {
+            $("<div/>").text(message).prependTo("#log");
+            $("#log").attr("scrollTop", 0);
           }
+          $("#spinner").hide();
+          $("#something").autocomplete({
+            source: "/councils/#{@council.slug}/suggest",
+            minLength: 2,
+            search: function(event, ui) { 
+              $('#spinner').show();
+            },
+            open: function(event, ui) {
+              $('#spinner').hide();
+            },
+            select: function(event, ui) {
+              $('#spinner').hide();
+              help_me_do_something = ui.item;
+              log(ui.item ? ("Selected: " + ui.item.label + " : " + ui.item.value) : "Nothing selected, input was " + this.value);
+            
+            }
+          });
         });
-      });
     
   %body
     %div#page
@@ -56,9 +66,8 @@
           %p
             %a{:href => "/", :class => "logo"} DIY 
             - if @council
-              %img{:src=>"#{@council["url"]}/favicon.ico", :width=>32, :height=>32, :id=>"favicon"}
-              %a{:href=> "/councils/#{@council.id}"}
-                = @council["name"]
+              %img{:src=>"#{@council["url"]}/favicon.ico", :width=>16, :height=>16, :id=>"favicon"}
+              %a{:href=> "/councils/#{@council.slug}"}= @council["name"]
             - else
               Council
             %span#about_this_site
@@ -67,18 +76,18 @@
         - if @council
           %ul#common_main_menu
             %li
-              %a{:href=>"/councils/#{@council.id}"}
+              %a{:href=>"/councils/#{@council.slug}"}
                 Main page
             %li
-              %a{:href=>"/councils/#{@council.id}/near_me"}
+              %a{:href=>"/councils/#{@council.slug}/near_me"}
                 Near me
             %li
-              %a{:href=>"/councils/#{@council.id}/contact"}
+              %a{:href=>"/councils/#{@council.slug}/contact"}
                 Contact
 
-      %div#content 
+      %section#content 
         - if @council
-          %form#do_something{:action=>"/councils/#{@council.id}/page", :method=>:get}
+          %form#do_something{:action=>"/councils/#{@council.slug}/page", :method=>:get}
             %label{:for=>"url"}
               %span
                 Show me
@@ -88,7 +97,11 @@
                 %span please
               %span#try
                 Try "council tax", "libraries", "park"...
-        %div#main_content
+        - if @page_title
+          %header
+            %h1#page_title
+              = @page_title
+        %section#main_content
           = yield
       
       %div#log

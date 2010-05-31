@@ -32,10 +32,6 @@ module DIY
     end
   end
   
-  def self.urlize url, council
-    
-  end
-  
   class Council
     
     attr_accessor :council_id
@@ -46,7 +42,7 @@ module DIY
     end
     
     def slug
-      @data["title"].downcase.gsub("'","").gsub(" ","_").gsub("-","_")
+      @slug ||= @data["name"].downcase.gsub("&", "and").gsub("royal borough of","").gsub("london borough of","").gsub("district","").gsub("council of the","").gsub("city and county of", "").gsub("city of", "").gsub("city","").gsub("metropolitan","").gsub("county","").gsub("borough of", "").gsub("borough","").gsub("council", "").gsub("'","").strip.gsub(" ","_").gsub("-","_")
     end
     
     def self.from_slug the_slug
@@ -62,8 +58,13 @@ module DIY
       found unless found.blank?
     end
     
-    def initialize(id)
-      self.council_id = id
+    def initialize(id, the_data = nil)
+      self.council_id = id    
+      self.data = the_data if the_data
+    end
+    
+    def name
+      @data["name"] || @name
     end
     
     def services
@@ -100,7 +101,7 @@ module DIY
     
     def search terms 
       terms = self.class.clean_terms terms
-      results = Weary.get("http://boss.yahooapis.com/ysearch/web/v1/site:#{@data["url"]}%20#{terms}?appid=#{YAHOO_BOSS_APP_ID}&format=json").perform.parse
+      results = Weary.get("http://boss.yahooapis.com/ysearch/web/v1/site:#{@data["url"]}%20#{terms}?appid=#{YAHOO_BOSS_APP_ID}&type=html&format=json").perform.parse
       pages = results.first.last["resultset_web"].map{|a| Page.new(a, self)}
       services.select{|a| a["title"].downcase.include?(terms)} + pages
     end
@@ -122,7 +123,7 @@ module DIY
     end
     
     def self.all
-      Weary.get("http://openlylocal.com/councils.json").perform.parse.map{|a| a["council"]}
+      Weary.get("http://openlylocal.com/councils/all.json").perform.parse.map{|a| Council.new(a["council"]["id"], a["council"])}
     end
     
     def self.get(id)
@@ -185,10 +186,6 @@ module DIY
       @data["url"]
     end
     
-    def diy_url
-      DIY.urlize(@data["url"], council)
-    end
-    
     def to_json
       "{'title':#{title},'url':#{url}}"
     end
@@ -225,10 +222,6 @@ module DIY
     
     def url
       @data["url"]
-    end
-    
-    def diy_url
-      DIY.urlize(@data["url"], council)
     end
     
     def to_json

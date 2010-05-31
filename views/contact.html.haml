@@ -1,3 +1,15 @@
 %h2
+  = @council["telephone"]
+%h2
   Address
-= @council["address"].gsub(",", "<br />")
+%p= @council["address"].gsub(",", "<br />")
+
+- if @council["twitter"]
+  %h2
+    %a{:href=>"http://twitter.com/#{@council["twitter"]}"}
+    = "@#{@council["twitter"]} on Twitter"
+%h2
+  My local councillor
+  
+%p
+  In progress...

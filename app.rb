@@ -53,9 +53,11 @@ class CostSavingExercise < Sinatra::Base
   helpers Sinatra::OutputBuffer::Helpers
   register Sinatra::RespondTo
   
+  before do
+    @show_page_title = true
+  end
+  
   get "/" do
-    @page_title = "DIY Council"
-    
     @councils = DIY::Council.all rescue []
     
     haml :home
@@ -65,56 +67,55 @@ class CostSavingExercise < Sinatra::Base
     begin
       @council = DIY::Council.find_by_postcode(params[:postcode])
       STDERR.puts @council.inspect
-      redirect "/councils/#{@council["id"]}"
+      redirect "/councils/#{@council.slug}"
     rescue
       flash[:errors] = "Sorry - I can't find the council for that postcode"
       redirect "/"
     end
   end
 
-  get "/councils/:council_id" do |council_id|
-    @council = DIY::Council.get(council_id)
+  get "/councils/:council_slug" do |council_slug|
+    @council = DIY::Council.from_slug(council_slug)
     @services = @council.services
     @rss_feed = @council.rss_feed
-    @page_title = "DIY #{@council.name}"
     
     haml :council
   end
   
-  get "/councils/:council_id/contact" do |council_id|
-    @council = DIY::Council.get(council_id)
-    @page_title = "Contact | DIY #{@council.name}"
+  get "/councils/:council_slug/contact" do |council_slug|
+    @council = DIY::Council.from_slug(council_slug)
+    @page_title = "Contact"
     haml :contact
   end
   
-  get "/councils/:council_id/near_me" do |council_id|
-    @council = DIY::Council.get(council_id)
-    @page_title = "Find things near me | DIY #{@council.name}"
+  get "/councils/:council_slug/near_me" do |council_slug|
+    @council = DIY::Council.from_slug(council_slug)
+    @page_title = "Find things near me"
     haml :near_me
   end
   
-  get "/councils/:council_id/suggest" do |council_id|
-    @council = DIY::Council.get(council_id)
+  get "/councils/:council_slug/suggest" do |council_slug|
+    @council = DIY::Council.from_slug(council_slug)
     STDERR.puts params[:term]
     results = @council.suggest(CGI.unescape(params[:term]))
     content_type :json
     results.to_json
   end
   
-  get "/councils/:council_id/services/:service_id" do |council_id,service_id|
-    @council = DIY::Council.get(council_id)
+  get "/councils/:council_slug/services/:service_id" do |council_slug,service_id|
+    @council = DIY::Council.from_slug(council_slug)
     @services = @council.services
     
     @service = @services.select{|a| a["id"].to_s == service_id.to_s}.first
     STDERR.puts @service.inspect
-    @page_title = "#{@service.title} | DIY #{@council.name}"
+    @page_title = "#{@service.title}"
     haml :service
   end
   
   get /councils\/(.*)\/page/ do
-    @council = DIY::Council.get(params[:captures][0])
+    @council = DIY::Council.from_slug(params[:captures][0])
     @page = @council.get_page(params[:url])
-    @page_title = "#{@page.title} | DIY #{@council.name}"
+    @page_title = "#{@page.title}"
     haml :page
   end
   

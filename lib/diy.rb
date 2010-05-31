@@ -13,16 +13,22 @@ YAHOO_BOSS_APP_ID = "7gATyJ7V34FoqrIuRvHAAwMYi_L7gp2ZRFAoTP5sZzQlsNzmC1mjv.2yfvz
 
 module DIY
   
-  def self.titleize title, council_name
-    common_separators = [" - ", " : ", " | ", ". ", " :: "]
+  def self.titleize title, council
+    council_name = council["name"]
+    separator = nil
+    common_separators = [" - ", ": ", " | ", ". ", " :: "]
     common_separators.each{|sep| separator = sep if title.include?(sep)}
-    items = title.split(separator)
-    if(items.first.similarity(council_name) > 0.5)
-      items.delete_at(0)
-    elsif(items.last.similarity(council_name) > 0.5)
-      items.delete_at(items.size - 1)
+    if separator
+      items = title.split(separator)
+      if(items.first.similarity(council_name) > 0.5)
+        items.delete_at(0)
+      elsif(items.last.similarity(council_name) > 0.5)
+        items.delete_at(items.size - 1)
+      end
+      items.join(" | ")
+    else
+      title
     end
-    items.join(" | ")
   end
   
   def self.urlize url, council

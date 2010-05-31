@@ -40,6 +40,7 @@ class String
 
   def similarity( str_in )
     return 0 if str_in == nil
+    return 0 unless str_in.length
     return 1 if self == str_in
 
     # Make a graph of each word (okay, so its not a true graph, but is similar)

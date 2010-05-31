@@ -7,7 +7,7 @@ module Readability
   class Document
     TEXT_LENGTH_THRESHOLD = 12
     RETRY_LENGTH = 250
-    LINK_DENSITY_FACTOR = 1.5
+    LINK_DENSITY_FACTOR = 0.6
 
     attr_accessor :options, :html
 

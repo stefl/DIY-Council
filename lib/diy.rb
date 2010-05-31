@@ -195,15 +195,20 @@ module DIY
     end
     
     def extract
-      Extractomatic.get(self.data["url"])
+      @extracted ||= Extractomatic.get(self.data["url"])
     end
     
     def readable
-      Readability::Document.new(open(self.data["url"]).read)
+      @readable ||= Readability::Document.new(open(self.data["url"]).read)
     end
     
     def title
       @title ||= DIY.titleize(@data["title"], council)
+    end
+    
+    def load_title
+      doc = Nokogiri::HTML(open(self.url)) 
+      @title = @data["title"] = DIY.titleize(doc.at_css("title").text, self.council)
     end
     
     def url

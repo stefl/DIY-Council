@@ -122,7 +122,9 @@ class CostSavingExercise < Sinatra::Base
   get "/:council_slug/page" do |council_slug|
     @council = DIY::Council.from_slug(council_slug)
     @page = @council.get_page(params[:url])
+    @page.load_title
     @page_title = "#{@page.title}"
+    STDERR.puts @page.inspect
     haml :page
   end
   

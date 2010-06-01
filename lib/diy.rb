@@ -72,7 +72,7 @@ module DIY
     end
     
     def rss_feed_url
-      @rss_feed_url ||= FeedDetector.fetch_feed_url(@data["url"])
+      @rss_feed_url ||= (@data["feed_url"] || FeedDetector.fetch_feed_url(@data["url"]))
     end
     
     def rss_feed

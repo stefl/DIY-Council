@@ -9,7 +9,10 @@
 !link= #1fae77
 !background= #ded
 
+html
+  +expand
 body
+  +expand
   padding= 0 0 !line 0
   
   font-family: "Helvetica Neue", Arial, Helvetica, sans-serif
@@ -309,6 +312,13 @@ input#postcode
 #by_postcode label, #by_name label, #by_postcode select, #by_name select
   font-size: 125%
   font-weight: bold
+#by_name
+  select
+    font-weight: bold
+    font-size: 100%
+    border-color= !link
+    vertical-align: middle
+    margin-top: -0.2em
 #get_started
   +border-radius(6px, 6px, 6px, 6px)
   background-color: #eee
@@ -323,18 +333,28 @@ input#postcode
     padding: 0.25em
     option
       font-size: 125%
-#do_something
+#do_something, #change_appearance
   +border-radius(6px, 6px, 6px, 6px)
   background-color: #eee
   padding: 0.75em
   margin: 0.33em
   margin-bottom: 1.5em
   label
+    select
+      font-weight: bold
+      font-size: 125%
+      border-color= !link
+      vertical-align: middle
+      margin-top: -0.2em
     input
       font-size: 125%
       margin-top: -0.2em
     span
       font-size: 125%
+      font-weight: bold
+    button
+      font-size: 110%
+      padding: 0.33em
   #spinner
     z-index: 3
     margin-left: -24px
@@ -429,3 +449,7 @@ sup#alpha
     display: block
     font-size: 75%
     margin-top: -0.75em
+p#lease_dont_take_this_the_wrong_way
+  color: #888
+section#why  
+  padding: 3em

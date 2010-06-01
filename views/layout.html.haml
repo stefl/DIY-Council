@@ -25,6 +25,8 @@
 
     %link{:href => "/css/screen.css", :media => 'screen', :rel => 'stylesheet', :type => 'text/css'}/
     %link{:href => "/jqcss/ui-lightness/jquery-ui-1.8.1.custom.css", :media => 'screen', :rel => 'stylesheet', :type => 'text/css'}/
+    - if session[:appearance] == "yellow_on_black"
+      %link{:href => "/css/yellow_on_black.css", :media => 'screen', :rel => 'stylesheet', :type => 'text/css'}/
     
     - if @council
       <script type="text/javascript"></script>
@@ -96,11 +98,14 @@
               %a{:href=>"/#{@council.slug}/contact"}
                 Contact
       #accessibility
-        #listen
-          %a{:href=>"http://wr.readspeaker.com/webreader/webreader.php?cid=8BJPVRSM92UWJH4FZRMB8FBZ5Z8UEY9D&amp;t=web_free&amp;title=readspeaker&amp;url=", :onclick=>"readpage(this.href+escape(document.location.href),1); return false;"}
-            Listen
+        %ul
+          %li
+            %a{:href=>"/accessibility"} Accessibility
+          %li
+            %a{:href=>"http://wr.readspeaker.com/webreader/webreader.php?cid=8BJPVRSM92UWJH4FZRMB8FBZ5Z8UEY9D&amp;t=web_free&amp;title=readspeaker&amp;url=", :onclick=>"readpage(this.href+escape(document.location.href),1); return false;"}
+              Listen
               
-          #WR_1
+        #WR_1
         
       %section#content 
         - if @council
@@ -132,7 +137,10 @@
           and friends using open source things:
           %a{:href=>"http://www.ruby-lang.org/"} Ruby
           %a{:href=>"http://openlylocal.com"} Openly Local
+          
           %a{:href=>"http://sinatrarb.com"} Sinatra
-        %p
-          This is an experiment. Whilst some local government sites could be improved, many are excellent examples of good practice on the web. This site isn't intended as criticism, but more as a "what if..."
+        %p#lease_dont_take_this_the_wrong_way
+          This is an experiment. Whilst some local government sites could be improved, many are excellent examples of good practice on the web. 
+          %br
+          This site isn't intended as criticism, but more as a "what if..."
           

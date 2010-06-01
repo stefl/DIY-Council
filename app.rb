@@ -69,6 +69,17 @@ class CostSavingExercise < Sinatra::Base
     haml :member, :layout=>false
   end
   
+  get "/accessibility" do
+    @page_title = "Accessibility"
+    haml :accessibility
+  end
+  
+  post "/appearance" do
+    session[:style] = params[:appearance]
+    flash[:errors] = "Your new display style"
+    redirect "/"
+  end
+  
   post "/find_by_postcode" do
     begin
       @council = DIY::Council.find_by_postcode(params[:postcode])

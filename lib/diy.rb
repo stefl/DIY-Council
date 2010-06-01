@@ -133,8 +133,16 @@ module DIY
       Page.new({"url"=>url, "title"=>nil}, self)
     end
     
+    def performance_url
+      terms = self.name.gsub(" ", "%20")
+      results = Weary.get("http://boss.yahooapis.com/ysearch/web/v1/site:http://oneplace.direct.gov.uk%20#{terms}?appid=#{YAHOO_BOSS_APP_ID}&count=1&type=html&format=json").perform.parse
+      results.first.last["resultset_web"].first["url"]
+    end
+    
     def performance
-      @performance ||= Page.new({"url"=>"http://oneplace.direct.gov.uk/#{self.slug.gsub("_", "")}"})
+      return @performance unless @performance.blank?
+      doc = Nokogiri::HTML.parse(open(performance_url).read)
+      @performance = doc.css('div#content div.contentLeft')
     end
     
     def self.all

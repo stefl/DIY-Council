@@ -22,24 +22,29 @@
   #makeup
     %h2
       Councillors
-    
-    #members
-      - @council.members.each do |member|
-        .member{:id=>"member_#{member["id"]}"}
-          %h3
-            %a{:href=>"#", :onclick=>"$('#member_display').load('/members/" + member['id'].to_s + "'); return false;"}= "#{member["first_name"]} #{member["last_name"]}"
-          %small
-            = member["party"]["name"]
-            |
-            = member["ward"]["name"]
-    #member_display
+    - if @council.members
+      #members
+        - @council.members.each do |member|
+          .member{:id=>"member_#{member["id"]}"}
+            %h3
+              %a{:href=>"#", :onclick=>"$('#member_display').load('/members/" + member['id'].to_s + "'); return false;"}= "#{member["first_name"]} #{member["last_name"]}"
+            %small
+              = member["party"]["name"]
+              |
+              = member["ward"]["name"]
+      #member_display
+    - else
+      %p
+        Sorry, we don't have any information on the councillors for this council.
   #stats
     %h2
       Stats
   #performance
     %h2
       Performance
-      
-      %p
-        We'll have some information here on how well a council is performing.
-      
+    
+    %h3
+      From an independent review by 
+      %a{:href=>@council.performance_url} oneplace
+        
+    = @council.performance

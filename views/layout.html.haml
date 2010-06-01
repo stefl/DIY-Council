@@ -111,7 +111,7 @@
         
       %section#content 
         - if @council
-          %form#do_something{:action=>"/#{@council.slug}/page", :method=>:get}
+          %form#do_something{:action=>"/#{@council.slug}/page", :method=>:get, :onsubmit=>"return false;"}
             %label{:for=>"url"}
               %span
                 Show me

@@ -27,7 +27,9 @@
     %link{:href => "/jqcss/ui-lightness/jquery-ui-1.8.1.custom.css", :media => 'screen', :rel => 'stylesheet', :type => 'text/css'}/
     - if session[:appearance] == "yellow_on_black"
       %link{:href => "/css/yellow_on_black.css", :media => 'screen', :rel => 'stylesheet', :type => 'text/css'}/
-    
+    - if session[:appearance] == "black_on_yellow"
+      %link{:href => "/css/black_on_yellow.css", :media => 'screen', :rel => 'stylesheet', :type => 'text/css'}/
+  
     - if @council
       <script type="text/javascript"></script>
       :javascript

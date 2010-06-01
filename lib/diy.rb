@@ -72,11 +72,18 @@ module DIY
     end
     
     def rss_feed_url
-      @rss_feed_url ||= (@data["feed_url"] || FeedDetector.fetch_feed_url(@data["url"]))
+      if @data["feed_url"] || @data["url"]
+        STDERR.puts "feed url #{@data["feed_url"] }"
+        STDERR.puts "guess url #{@data["url"] }"
+        @rss_feed_url ||= (@data["feed_url"] || FeedDetector.fetch_feed_url(@data["url"]) )
+      end
     end
     
     def rss_feed
-      @rss_feed ||= Weary.get(rss_feed_url).perform.parse.first.last["channel"]["item"] if rss_feed_url
+      unless rss_feed_url.blank?
+        STDERR.puts "RSS Feed url to get #{rss_feed_url}"
+        @rss_feed ||= Weary.get(rss_feed_url).perform.parse.first.last["channel"]["item"] 
+      end
     end
     
     def tag

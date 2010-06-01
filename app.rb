@@ -47,7 +47,8 @@ class CostSavingExercise < Sinatra::Base
   set :logging, true
   
   enable :methodoverride
-  use Rack::Session::Cookie, :secret => "mmmmmmm, data"
+  enable :sessions
+  
   use Rack::Flash, :sweep => true
   
   helpers Sinatra::OutputBuffer::Helpers
@@ -75,7 +76,7 @@ class CostSavingExercise < Sinatra::Base
   end
   
   post "/appearance" do
-    session[:style] = params[:appearance]
+    session[:appearance] = params[:appearance]    
     flash[:errors] = "Your new display style"
     redirect "/"
   end

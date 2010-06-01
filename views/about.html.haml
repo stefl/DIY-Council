@@ -1,0 +1,34 @@
+:javascript
+  $(document).ready(function() {
+    $("#tabs").tabs();
+  });
+  
+  
+
+#tabs
+  %ul
+    %li
+      %a{:href=>"#makeup"}
+        %span
+          Councillors
+    %li
+      %a{:href=>"#stats"}
+        %span
+          Stats
+  #makeup
+    %h2
+      Councillors
+    
+    #members
+      - @council.members.each do |member|
+        .member{:id=>"member_#{member["id"]}"}
+          %h3
+            %a{:href=>"#", :onclick=>"$('#member_display').load('/members/" + member['id'].to_s + "'); return false;"}= "#{member["first_name"]} #{member["last_name"]}"
+          %small
+            = member["party"]["name"]
+            |
+            = member["ward"]["name"]
+    #member_display
+  #stats
+    %h2
+      Stats

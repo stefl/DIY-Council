@@ -1,0 +1,32 @@
+%h2
+  = @member["first_name"]
+  = @member["last_name"]
+%p
+  
+- fields = ["telephone", "email", "address"]
+%dl
+  %dt
+    Ward
+  %dd
+    = @member["ward"]["name"]
+  %dt
+    Party
+  %dd
+    = @member["party"]["name"]
+  %dt
+    Email
+  %dd
+    %a{:href=>"mailto:#{@member["email"]}"}= @member["email"]
+  %dt
+    Telephone
+  %dd
+    = @member["telephone"]
+  %dt
+    Address
+  %dd
+    = @member["address"]
+  - if @member["blog_url"]
+    %dt
+      Blog
+    %dd
+      %a{:href=>@member["blog_url"]}= @member["blog_url"]

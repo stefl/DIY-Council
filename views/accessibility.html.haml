@@ -1,0 +1,18 @@
+%h2
+  Change the appearance of this site
+  
+- valid_appearances = {"yellow_on_black"=>"Yellow on black","black_on_yellow"=>"Black on yellow"}     
+#change_appearance
+  %form#choose_a_style{:action=>"/appearance", :method=>:post}
+    %label{:for=>"appearance"}
+      %span
+        I would like the site to display in
+      %select{:name=>"appearance"}
+        %option{:value=>0}
+          one of these...
+        - valid_appearances.each do |slug,appearance|
+          %option{:value=>slug} 
+            = appearance
+      %button{:type=>"submit", :name=>"Go"}
+        %span please
+      

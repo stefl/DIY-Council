@@ -149,15 +149,18 @@ module DIY
     end
     
     def performance_url
+      return @performance_url unless @performance_url.blank?
       terms = self.name.gsub(" ", "%20")
       results = Weary.get("http://boss.yahooapis.com/ysearch/web/v1/site:http://oneplace.direct.gov.uk%20#{terms}?appid=#{YAHOO_BOSS_APP_ID}&count=1&type=html&format=json").perform.parse
-      results.first.last["resultset_web"].first["url"]
+      @performance_url = results.first.last["resultset_web"].first["url"] rescue nil
     end
     
     def performance
       return @performance unless @performance.blank?
-      doc = Nokogiri::HTML.parse(open(performance_url).read)
-      @performance = doc.css('div#content div.contentLeft')
+      if performance_url
+        doc = Nokogiri::HTML.parse(open(performance_url).read)
+        @performance = doc.css('div#content div.contentLeft')
+      end
     end
     
     def self.all

@@ -36,6 +36,17 @@ module DIY
     base.gsub(/^(((\(?\+44\)?(\(0\))?\s?\d{4}|\(?\+44\)?(\(0\))?\s?(0)\s?\d{3}|\(?0\d{4}\)?)\s?\d{3}\s?\d{3})|((\(?\+44\)?(\(0\))?\s?\d{3}|\(?0\d{3}\)?)\s?(\d{3}\s?\d{4}|\d{4}\s?\d{4}))|((\(?\+44\)?(\(0\))?\s?\d{2}|\(?0\d{2}\)?)\s?\d{4}\s?\d{4}))(\s?\#(\d{4}|\d{3}|\d{5}))?$/) {|s| "<span class='telephone'>" + s.gsub(/[\(\)]/,"").gsub("(0)","").gsub("+44","0").gsub(/^00/,'0').gsub(' ','').to_s + "</span>"}
   end
   
+  def self.reroute_links(base, council)
+    r = rebase_links(base,council)
+    r.gsub(/href\=[\"\']/) {|s| s + "/councils/#{council.slug}/page?url="  }
+  end
+  
+  def self.rebase_links(base, council)
+    base.gsub(/href\=[\"\'](\/)/){|a| 
+    STDERR.puts a
+    a.chomp('/') + council.url.chomp('/') + "/" }
+  end
+  
   class Council
     
     attr_accessor :council_id
@@ -69,6 +80,10 @@ module DIY
     
     def name
       @data["name"] || @name
+    end
+    
+    def url
+      @data["url"]
     end
     
     def services
@@ -222,7 +237,7 @@ module DIY
     end
     
     def readable
-      @readable ||= Readability::Document.new(open(self.data["url"]).read)
+      @readable ||= DIY.reroute_links(Readability::Document.new(open(self.data["url"]).read).content)
     end
     
     def title

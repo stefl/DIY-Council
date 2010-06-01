@@ -17,7 +17,6 @@ body
   line-height= !line
   
   color: black
-  +gradient(!background, !background-#121)
   background-position: 0 0
   background-attachment: fixed
   
@@ -333,7 +332,8 @@ input#postcode
 #do_something, #change_appearance
   +border-radius(6px, 6px, 6px, 6px)
   background-color: #eee
-  padding: 0.75em
+  padding: 1em
+  padding-bottom: 0em
   margin: 0.33em
   margin-bottom: 1.5em
   label
@@ -356,6 +356,8 @@ input#postcode
     z-index: 3
     margin-left: -24px
     margin-top: 4px
+    padding: 0
+    line-height: 0
   #try
     font-size: 100%
     color: #888

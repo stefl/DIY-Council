@@ -32,6 +32,10 @@ module DIY
     end
   end
   
+  def self.add_telephone_microformats(base)
+    base.gsub(/^(((\(?\+44\)?(\(0\))?\s?\d{4}|\(?\+44\)?(\(0\))?\s?(0)\s?\d{3}|\(?0\d{4}\)?)\s?\d{3}\s?\d{3})|((\(?\+44\)?(\(0\))?\s?\d{3}|\(?0\d{3}\)?)\s?(\d{3}\s?\d{4}|\d{4}\s?\d{4}))|((\(?\+44\)?(\(0\))?\s?\d{2}|\(?0\d{2}\)?)\s?\d{4}\s?\d{4}))(\s?\#(\d{4}|\d{3}|\d{5}))?$/) {|s| "<span class='telephone'>" + s.gsub(/[\(\)]/,"").gsub("(0)","").gsub("+44","0").gsub(/^00/,'0').gsub(' ','').to_s + "</span>"}
+  end
+  
   class Council
     
     attr_accessor :council_id
@@ -129,8 +133,12 @@ module DIY
       Page.new({"url"=>url, "title"=>nil}, self)
     end
     
+    def performance
+      @performance ||= Page.new({"url"=>"http://oneplace.direct.gov.uk/#{self.slug.gsub("_", "")}"})
+    end
+    
     def self.all
-      Weary.get("http://openlylocal.com/councils/all.json").perform.parse.map{|a| Council.new(a["council"]["id"], a["council"])}
+      @@all_councils ||= Weary.get("http://openlylocal.com/councils/all.json").perform.parse.map{|a| Council.new(a["council"]["id"], a["council"])}
     end
     
     def self.get(id)

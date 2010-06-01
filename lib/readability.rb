@@ -46,10 +46,12 @@ module Readability
       article = get_article(candidates, best_candidate)
 
       cleaned_article = sanitize(article, candidates, options)
+      
       if remove_unlikely_candidates && article.text.strip.length < (options[:retry_length] || RETRY_LENGTH)
         make_html
         content(false)
       else
+        cleaned_article = DIY.add_telephone_microformats(cleaned_article)
         cleaned_article
       end
     end

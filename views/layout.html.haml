@@ -16,20 +16,22 @@
     
     %meta{:charset => "utf-8"}/
     %meta{:name => "MSSmartTagsPreventParsing", :content => "true"}/
-    
+    - if @council && @council.rss_feed_url
+      %link{:href=>@council.rss_feed_url, :rel=>"alternate", :title=>"News for #{@council.name}", :type=>"application/atom+xml"}
     %script{:src => "/js/jquery-1.4.2.min.js", :type => "text/javascript"}
     %script{:src => "/js/jquery-ui-1.8.1.custom.min.js", :type => "text/javascript"}
     %script{:src => "/js/jquery.clear_search.js", :type => "text/javascript"}
     %script{:src => "/js/jquery.cycle.min.js", :type => "text/javascript"}
     %script{:src => "http://wr.readspeaker.com/webreader/webreader.js.php?cid=8BJPVRSM92UWJH4FZRMB8FBZ5Z8UEY9D", :type => "text/javascript"}
-
     %link{:href => "/css/screen.css", :media => 'screen', :rel => 'stylesheet', :type => 'text/css'}/
     %link{:href => "/jqcss/ui-lightness/jquery-ui-1.8.1.custom.css", :media => 'screen', :rel => 'stylesheet', :type => 'text/css'}/
     - if session[:appearance] == "yellow_on_black"
       %link{:href => "/css/yellow_on_black.css", :media => 'screen', :rel => 'stylesheet', :type => 'text/css'}/
-    - if session[:appearance] == "black_on_yellow"
+    - elsif session[:appearance] == "black_on_yellow"
       %link{:href => "/css/black_on_yellow.css", :media => 'screen', :rel => 'stylesheet', :type => 'text/css'}/
-  
+    - else
+      %link{:href => "/css/pretty.css", :media => 'screen', :rel => 'stylesheet', :type => 'text/css'}/
+      
     - if @council
       <script type="text/javascript"></script>
       :javascript

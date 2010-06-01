@@ -66,5 +66,11 @@
 
 %h2
   Search for anything local to you
-%p
-  You could try: library, swimming pool, creche, sports centre, job center
+
+%p Try: 
+%ul#local_search_ideas
+  - facilities = ["Adventure playground", "Soft play area", "College", "Evening classes", "Car park", "Park", "Train station", "Coach station", "Creche", "Library", "Job center", "Museum", "Gallery", "Swimming pool", "Recycling centre", "Police", "Neighbourhood office", "Council house", "Surestart", "School", "Primary school", "Junior school", "Post office"]
+  - facilities.sort.each do |f|
+    %li
+      %a{:href=>"#",:onclick=>"localSearch.execute('#{f}')"} 
+        = "#{f}"

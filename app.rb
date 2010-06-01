@@ -142,6 +142,7 @@ class CostSavingExercise < Sinatra::Base
   
   get "/:council_slug/about" do |council_slug|
     @council = DIY::Council.from_slug(council_slug)
+    @page_title = "About the council"
     haml :about
   end
   

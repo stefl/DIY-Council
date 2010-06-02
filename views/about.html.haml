@@ -38,14 +38,13 @@
               = member["ward"]["name"]
       #member_display
 
-  - if @council.stats
+  - unless @council.stats.blank?
     #stats
       %h2
         Stats
-        - if @council.stats
-          %h3
-            %a{:href=>@council.profile_url} From OpenlyLocal
-          = @council.stats
+      %h3
+        %a{:href=>@council.profile_url} From OpenlyLocal
+      = @council.stats
   - if @council.performance
     #performance
       %h2

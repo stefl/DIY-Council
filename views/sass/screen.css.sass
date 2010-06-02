@@ -224,8 +224,6 @@ footer#credits
   position: absolute
   padding-top: 1.5em
   width: 100%
-  bottom: 0
-  z-index: 3
       
 div#informer
   z-index: 1000
@@ -453,3 +451,32 @@ ul#local_search_ideas
     padding: 0.25em
     background-color: #ddd
     +border-radius(4px, 4px, 4px, 4px)
+
+#grouped_datapoints
+  .alert
+    display: none
+  h3
+    display: none
+table
+  margin-top: 1.5em
+  margin-bottom: 1.5em
+  width: 100%
+  caption
+    font-weight: bold
+    background-color: #ddd
+    padding: 0.2em
+  tbody
+    background-color: white
+    padding: 0.5em
+    tr
+      border: 2px solid #eee
+    tr:nth-child(odd)
+      background-color:#eee
+    tr:nth-child(even)
+      background-color: #fff
+    th
+      background-color: #f6f6f6
+      padding: 0.2em
+    td
+      border: 1px solid #f6f6f6
+      padding: 0.2em

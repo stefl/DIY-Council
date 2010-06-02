@@ -44,7 +44,7 @@ module DIY
   def self.rebase_links(base, council)
     base.gsub(/href\=[\"\'](\/)/){|a| 
     STDERR.puts a
-    a.chomp('/') + council.url.chomp('/') + "/" }
+    a.chomp('/') + council["url"].chomp('/') + "/" }
   end
   
   class Council
@@ -208,7 +208,7 @@ module DIY
     def stats
       return @stats unless @stats.blank?
       doc = Nokogiri::HTML.parse(open(profile_url).read)
-      @stats = DIY.reroute_links(doc.css('div#main').to_html, {"url"=>"http://openlylocal.com"})
+      @stats = DIY.rebase_links(doc.css('#grouped_datapoints').to_html, {"url"=>"http://openlylocal.com"})
     end
     
   end

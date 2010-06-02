@@ -22,11 +22,7 @@
     %h2
       Get in touch with the council
       
-    %h3
-      = @council["telephone"]
-    %h3
-      Address
-    %p= @council["address"].gsub(",", "<br />")
+    = @council.contact_details
 
     - if @council["twitter"]
       %h2

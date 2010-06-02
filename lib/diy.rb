@@ -211,6 +211,19 @@ module DIY
       @stats = DIY.rebase_links(doc.css('#grouped_datapoints').to_html, {"url"=>"http://openlylocal.com"})
     end
     
+    def directgov_url
+      return @directgov_url unless @directgov_url.blank?
+      terms = self.name.gsub(" ", "%20")
+      results = Weary.get("http://boss.yahooapis.com/ysearch/web/v1/site:http://direct.gov.uk%20#{terms}?appid=#{YAHOO_BOSS_APP_ID}&count=1&type=html&format=json").perform.parse
+      @directgov_url = results.first.last["resultset_web"].first["url"] rescue nil
+    end
+    
+    def contact_details
+      return @contact_details unless @contact_details.blank?
+      doc = Nokogiri::HTML.parse(open(directgov_url).read)
+      @contact_details = DIY.add_telephone_microformats(doc.css('.subContent').to_html)
+    end
+    
   end
   
   class Member

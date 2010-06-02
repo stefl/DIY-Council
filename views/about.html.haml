@@ -12,7 +12,7 @@
         %a{:href=>"#makeup"}
           %span
             Councillors
-    - if @council.stats
+    - unless @council.stats.blank?
       %li
         %a{:href=>"#stats"}
           %span

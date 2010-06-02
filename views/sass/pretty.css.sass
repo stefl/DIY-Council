@@ -1,11 +1,23 @@
 @import css3.css.sass
 
 !background= #dafbfa
+!link= #1fae77
 
 body
   +gradient(!background+#111, !background)
+  form
+    input
+      +gradient(#eee, white)
+    button
+      text-shadow= -1px -1px 1px !link-#222
+      +gradient(!link, !link-#111)
+      &:hover
+        +gradient(#00ff96, #00ee76)
 #content
   +box-shadow(0px,0px, 30px, !background-#111)
+#message
+  text-shadow: 1px 1px 1px white
+  +box-shadow(rgba(0, 0, 0, 0.5), 0, 0, 2px)
 ul#common_main_menu 
   li
     padding: 5px
@@ -14,3 +26,5 @@ ul#common_main_menu
       +box-shadow(0px,0px, 10px, !background-#111)
 h1, h2
   color: #223333
+footer#credits
+  +gradient(!background, !background-#222)

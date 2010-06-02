@@ -49,7 +49,7 @@ body
       font-size: 24px
       
       +border-radius(8px, 8px, 8px, 8px)
-      +gradient(#eee, white)
+      
       
     div.submit
       clear: both
@@ -65,27 +65,22 @@ body
 
       font-weight: bold
       font-size: 1em
-      text-shadow= -1px -1px 1px !link-#222
+      
       text-decoration: none
       text-align: center
 
       cursor: pointer
       color: white
-      +gradient(!link, !link-#111)
+      
       border= 1px outset !link+#222
       +border-radius(10px, 10px, 10px, 10px)
 
-      &:hover
-        +gradient(#00ff96, #00ee76)
+      
     
 div#page  
   margin: 1.5em
     
 div#message
-  z-index: 1000
-  position: absolute
-  left: 0
-  top: 0
   width: 100%
   
   padding= !line/2 0
@@ -93,34 +88,17 @@ div#message
   font-size: 18px
   font-weight: bold
   text-align: center
-  text-shadow: 1px 1px 1px white
   
-  color: black
-  background: rgba(255, 255, 255, 0.9)
-  border-bottom: 1px solid white
-  +box-shadow(rgba(0, 0, 0, 0.5), 0, 0, 2px)
+  color: orange
+  background-color: #fee
+  +border-radius(6px, 6px, 6px, 6px)
+  
 
 nav#masthead
   z-index: 2
   position: relative
   font-size: 14px
   font-weight: bold
-  
-  div.global
-    p
-      padding= !line/4 !gutter !line/4 0
-      
-      font-size: 12px
-      text-align: right
-      text-shadow= 1px 1px 1px white
-      
-      color: #999
-      
-      a
-        font-weight: normal
-        
-        color: #666
-      
     
       
 section#content
@@ -241,6 +219,9 @@ footer#credits
   clear: both
   margin-top: 1.5em
   text-align: center
+  position: absolute
+  width: 100%
+  bottom: 0
       
 div#informer
   z-index: 1000
@@ -287,8 +268,9 @@ p
   font-size: 150%
   margin-top: 1.5em
   margin-left: 1em
+  color= !link-#666
   a
-    color: black
+    color= !link-#333
 dl
   dt
     font-weight: bold
@@ -304,7 +286,7 @@ h2
 input#postcode
   width: 8em !important
 #about_this_site
-  color: #aba
+  color= !background-#333
 #by_postcode label, #by_name label, #by_postcode select, #by_name select
   font-size: 125%
   font-weight: bold
@@ -414,7 +396,7 @@ ul#common_main_menu
   right: 1.5em
 sup#alpha
   font-size: 50%
-  color: #999
+  color= !background-#666
   position: relative
   top: -2em
   left: -3.5em

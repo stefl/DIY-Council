@@ -16,6 +16,7 @@
     
     %meta{:charset => "utf-8"}/
     %meta{:name => "MSSmartTagsPreventParsing", :content => "true"}/
+    %meta{:"http-equiv"=>"Content-Language", :content=>"en_UK"}/
     - if @council && @council.rss_feed_url
       %link{:href=>@council.rss_feed_url, :rel=>"alternate", :title=>"News for #{@council.name}", :type=>"application/atom+xml"}
     %script{:src => "/js/jquery-1.4.2.min.js", :type => "text/javascript"}
@@ -67,11 +68,6 @@
     
   %body
     %div#page
-      - if flash.has?(:errors)
-        %div#message
-          - flash[:errors].each do |message|
-            = succeed "." do
-              = message
         
       %nav#masthead
         %div#diycouncil
@@ -101,6 +97,12 @@
             %li
               %a{:href=>"/#{@council.slug}/contact"}
                 Contact
+      - if session[:postcode]
+        #postcode
+          Your postcode is
+          = session[:postcode]
+          %a{:href=>"/forget_postcode"} Forget
+        
       #accessibility
         %ul
           %li
@@ -111,7 +113,8 @@
               
         #WR_1
         
-      %section#content 
+      %section#content
+       
         - if @council
           %form#do_something{:action=>"/#{@council.slug}/page", :method=>:get, :onsubmit=>"return false;"}
             %label{:for=>"url"}
@@ -128,25 +131,32 @@
             %h1#page_title
               = @page_title
         %section#main_content
+          - if flash.has?(:errors)
+            %div#message
+              - flash[:errors].each do |message|
+                = succeed "." do
+                  = message
           / RSPEAK_START 
           = yield
           / RSPEAK_STOP 
       
       %div#log
       
-      %footer#credits
-        %p 
-          Mashed by 
-          %a{:href=>"http://stef.io"} Stef
-          and friends using open source things:
-          %a{:href=>"http://www.ruby-lang.org/"} Ruby
-          %a{:href=>"http://openlylocal.com"} Openly Local
-          %a{:href=>"http://sinatrarb.com"} Sinatra
-          \:
-          %a{:href=>"http://github.com/steflewandowski/DIY-Council"} Source code
-          
-        %p#lease_dont_take_this_the_wrong_way
-          This is an experiment. Whilst some local government sites could be improved, many are excellent examples of good practice on the web. 
-          %br
-          This site isn't intended as criticism, but more as a "what if..."
+    %footer#credits
+      %p 
+        Mashed by 
+        %a{:href=>"http://stef.io"} Stef
+        and friends using open source things:
+        %a{:href=>"http://www.ruby-lang.org/"} Ruby
+        |
+        %a{:href=>"http://openlylocal.com"} Openly Local
+        |
+        %a{:href=>"http://sinatrarb.com"} Sinatra
+        |
+        %a{:href=>"http://github.com/steflewandowski/DIY-Council"} Source code
+        
+      %p#lease_dont_take_this_the_wrong_way
+        This is an experiment. Whilst some local government sites could be improved, many are excellent examples of good practice on the web. 
+        %br
+        This site isn't intended as criticism, but more as a "what if..."
           

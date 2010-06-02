@@ -9,6 +9,16 @@ require 'cgi'
 require 'pp'
 require 'similarity'
 
+$: << File.dirname(__FILE__)
+
+require 'dm-core'
+require 'postgres'
+require 'do_postgres'
+require 'diy_action'
+require 'diy_service'
+require 'diy_council_service'
+require 'diy_service_action'
+
 YAHOO_BOSS_APP_ID = "7gATyJ7V34FoqrIuRvHAAwMYi_L7gp2ZRFAoTP5sZzQlsNzmC1mjv.2yfvzITyWAhK0INaBA"
 
 module DIY
@@ -222,6 +232,12 @@ module DIY
       return @contact_details unless @contact_details.blank?
       doc = Nokogiri::HTML.parse(open(directgov_url).read)
       @contact_details = DIY.add_telephone_microformats(doc.css('.subContent').to_html)
+    end
+    
+    def page_about keyword
+      # if we can get an exact match returns a Page, otherwise nil
+      
+      Action.first(:word=>"keyword").services
     end
     
   end

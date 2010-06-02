@@ -40,6 +40,8 @@ $: << "lib"
 require 'readability'
 require "diy"
 
+DataMapper.setup(:default, "postgres://postgres:postgres@localhost:5432/diycouncil_#{ENV["RACK_ENV"]}")
+
 class CostSavingExercise < Sinatra::Base
   set :root, File.dirname(__FILE__)
   set :app_file, __FILE__
@@ -73,6 +75,12 @@ class CostSavingExercise < Sinatra::Base
   get "/accessibility" do
     @page_title = "Accessibility"
     haml :accessibility
+  end
+  
+  get "/forget_postcode" do
+    session["postcode"] = nil
+    flash[:errors] = "Your postcode has been forgotten"
+    redirect "/"
   end
   
   post "/appearance" do

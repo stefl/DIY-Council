@@ -7,22 +7,26 @@
 
 #tabs
   %ul
-    %li
-      %a{:href=>"#makeup"}
-        %span
-          Councillors
-    %li
-      %a{:href=>"#stats"}
-        %span
-          Stats
-    %li
-      %a{:href=>"#performance"}
-        %span
-          Performance
-  #makeup
-    %h2
-      Councillors
     - if @council.members
+      %li
+        %a{:href=>"#makeup"}
+          %span
+            Councillors
+    - if @council.stats
+      %li
+        %a{:href=>"#stats"}
+          %span
+            Stats
+    - if @council.performance
+      %li
+        %a{:href=>"#performance"}
+          %span
+            Performance
+  - if @council.members
+    #makeup
+      %h2
+        Councillors
+    
       #members
         - @council.members.each do |member|
           .member{:id=>"member_#{member["id"]}"}
@@ -33,22 +37,22 @@
               |
               = member["ward"]["name"]
       #member_display
-    - else
-      %p
-        Sorry, we don't have any information on the councillors for this council.
-  #stats
-    %h2
-      Stats
-      - if @council.stats
+
+  - if @council.stats
+    #stats
+      %h2
+        Stats
+        - if @council.stats
+          %h3
+            %a{:href=>@council.profile_url} From OpenlyLocal
+          = @council.stats
+  - if @council.performance
+    #performance
+      %h2
+        Performance
+      - if @council.performance_url
         %h3
-          %a{:href=>@council.profile_url} From OpenlyLocal
-        = @council.stats
-  #performance
-    %h2
-      Performance
-    - if @council.performance_url
-      %h3
-        From an independent review by 
-        %a{:href=>@council.performance_url} oneplace
+          From an independent review by 
+          %a{:href=>@council.performance_url} oneplace
         
-      = @council.performance
+        = @council.performance

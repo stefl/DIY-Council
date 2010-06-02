@@ -38,7 +38,7 @@ module DIY
   
   def self.reroute_links(base, council)
     r = rebase_links(base,council)
-    r.gsub(/href\=[\"\']/) {|s| s + "/councils/#{council.slug}/page?url="  }
+    r.gsub(/href\=[\"\']/) {|s| s + "/#{council.slug}/page?url="  }
   end
   
   def self.rebase_links(base, council)
@@ -159,7 +159,7 @@ module DIY
       return @performance unless @performance.blank?
       if performance_url
         doc = Nokogiri::HTML.parse(open(performance_url).read)
-        @performance = doc.css('div#content div.contentLeft')
+        @performance = DIY.reroute_links(doc.css('div#content div.contentLeft').to_html, self)
       end
     end
     
@@ -198,10 +198,19 @@ module DIY
     end
     
     def members
-      m = Weary.get("http://openlylocal.com/members.json?council_id=#{self.id}").perform.parse.map{|a| a["member"]} rescue m=[]
-      STDERR.puts m.inspect
-      m
+      Weary.get("http://openlylocal.com/members.json?council_id=#{self.id}").perform.parse.map{|a| a["member"]} rescue []
     end
+    
+    def profile_url
+      "http://openlylocal.com/councils/#{self.id}"
+    end
+    
+    def stats
+      return @stats unless @stats.blank?
+      doc = Nokogiri::HTML.parse(open(profile_url).read)
+      @stats = DIY.reroute_links(doc.css('div#main').to_html, {"url"=>"http://openlylocal.com"})
+    end
+    
   end
   
   class Member
@@ -240,7 +249,7 @@ module DIY
     end
     
     def readable
-      @readable ||= DIY.reroute_links(Readability::Document.new(open(self.data["url"]).read).content)
+      @readable ||= DIY.reroute_links(Readability::Document.new(open(self.data["url"]).read).content, self.council)
     end
     
     def title

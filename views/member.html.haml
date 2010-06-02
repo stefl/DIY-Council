@@ -1,9 +1,7 @@
 %h2
   = @member["first_name"]
   = @member["last_name"]
-%p
-  
-- fields = ["telephone", "email", "address"]
+
 %dl
   %dt
     Ward
@@ -13,13 +11,13 @@
     Party
   %dd
     = @member["party"]["name"]
-  %dt
+  %dt.email
     Email
   %dd
     %a{:href=>"mailto:#{@member["email"]}"}= @member["email"]
   %dt
     Telephone
-  %dd
+  %dd.telephone
     = @member["telephone"]
   %dt
     Address
@@ -30,3 +28,10 @@
       Blog
     %dd
       %a{:href=>@member["blog_url"]}= @member["blog_url"]
+  %dt
+    Full profile
+  %dd
+    %a{:href=>"http://openlylocal.com/members/#{@member["id"]}"} 
+      = @member["first_name"]
+      = @member["first_name"]
+      on OpenlyLocal

@@ -39,12 +39,16 @@
   #stats
     %h2
       Stats
+      - if @council.stats
+        %h3
+          %a{:href=>@council.profile_url} From OpenlyLocal
+        = @council.stats
   #performance
     %h2
       Performance
-    
-    %h3
-      From an independent review by 
-      %a{:href=>@council.performance_url} oneplace
+    - if @council.performance_url
+      %h3
+        From an independent review by 
+        %a{:href=>@council.performance_url} oneplace
         
-    = @council.performance
+      = @council.performance

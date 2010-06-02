@@ -20,7 +20,7 @@
     %h2
       News 
       %a{:href=>@council.rss_feed_url}
-      %img{:src=>"/images/feed-icon-14x14.png", :width=>14, :height=>14,:alt=>"RSS"}
+        %img{:src=>"/images/feed-icon-14x14.png", :width=>14, :height=>14,:alt=>"RSS"}
     %ul#latest_news
       - unless @council.rss_feed.blank?
         - @council.rss_feed.entries.each do |entry|

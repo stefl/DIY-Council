@@ -40,7 +40,7 @@ $: << "lib"
 require 'readability'
 require "diy"
 
-DataMapper.setup(:default, "postgres://postgres:postgres@localhost:5432/diycouncil_#{ENV["RACK_ENV"]}")
+DIY.connect
 
 class CostSavingExercise < Sinatra::Base
   set :root, File.dirname(__FILE__)

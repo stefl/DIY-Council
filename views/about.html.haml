@@ -22,6 +22,12 @@
         %a{:href=>"#performance"}
           %span
             Performance
+    - unless @council.ons_datasets.blank?
+      %li
+        %a{:href=>"#datasets"}
+          %span
+            Datasets
+            
   - if @council.members
     #makeup
       %h2
@@ -55,3 +61,10 @@
           %a{:href=>@council.performance_url} oneplace
         
         = @council.performance
+  - unless @council.ons_datasets.blank?
+    #stats
+      %h2
+        Datasets
+      %h3
+        %a{:href=>@council.ons_url} From ONS
+      = @council.ons_datasets

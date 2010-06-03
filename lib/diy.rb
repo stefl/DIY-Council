@@ -1,3 +1,5 @@
+$: << File.dirname(__FILE__)
+
 require 'rubygems'
 require 'weary'
 require 'yajl'
@@ -8,9 +10,6 @@ require 'extractomatic'
 require 'cgi'
 require 'pp'
 require 'similarity'
-
-$: << File.dirname(__FILE__)
-
 require 'dm-core'
 require 'postgres'
 require 'do_postgres'
@@ -18,10 +17,14 @@ require 'diy_action'
 require 'diy_service'
 require 'diy_council_service'
 require 'diy_service_action'
+require 'phrases'
 
 YAHOO_BOSS_APP_ID = "7gATyJ7V34FoqrIuRvHAAwMYi_L7gp2ZRFAoTP5sZzQlsNzmC1mjv.2yfvzITyWAhK0INaBA"
 
 module DIY
+  def self.connect
+    DataMapper.setup(:default, "postgres://postgres:postgres@localhost:5432/diycouncil_#{ENV["RACK_ENV"] || "development"}")
+  end
   
   def self.titleize title, council
     return "" if  title.blank?
@@ -230,8 +233,22 @@ module DIY
     
     def contact_details
       return @contact_details unless @contact_details.blank?
+      return nil if directgov_url.blank?
       doc = Nokogiri::HTML.parse(open(directgov_url).read)
       @contact_details = DIY.add_telephone_microformats(doc.css('.subContent').to_html)
+    end
+    
+    def ons_url
+      @data["ons_url"]
+    end
+    
+    def ons_datasets
+      #TODO Looks like ONS has a 'browser check' that only lets you through if you have javascript. Lame.
+      return @ons_datasets unless @ons_datasets.blank?
+      return nil if ons_url.blank?
+      doc = Nokogiri::HTML.parse(open(ons_url).read)
+      @ons_datasets = DIY.rebase_links(doc.css('.leftBody').to_html, {"url"=>"http://neighbourhood.statistics.gov.uk/dissemination"})
+      
     end
     
     def page_about keyword

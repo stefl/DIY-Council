@@ -18,6 +18,7 @@ require 'diy_service'
 require 'diy_council_service'
 require 'diy_service_action'
 require 'phrases'
+require 'directgov'
 
 YAHOO_BOSS_APP_ID = "7gATyJ7V34FoqrIuRvHAAwMYi_L7gp2ZRFAoTP5sZzQlsNzmC1mjv.2yfvzITyWAhK0INaBA"
 

@@ -14,8 +14,8 @@ module Directgov
       self.data = d
     end
     
-    def self.get(id)
-      Directgov::Article.new(Weary.get("http://syndication.innovate.direct.gov.uk/id/article/DG_#{id}.json"){|req|
+    def self.get(egms_id)
+      Directgov::Article.new(Weary.get("http://syndication.innovate.direct.gov.uk/id/article/#{egms_id}.json"){|req|
         req.credentials = {:username => ::DIRECTGOV_USER, :password => ::DIRECTGOV_PASS}
       }.perform_sleepily.parse["article"]) rescue nil
     end
@@ -33,7 +33,7 @@ module Directgov
     end
     
     def url
-      "/articles/#{@data["id"]}"
+      "/articles/#{@data["egms_id"]}"
     end
     
     def diy_url

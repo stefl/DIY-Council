@@ -7,10 +7,13 @@ class FeedDetector
   # for example: http://blog.dominiek.com/ => http://blog.dominiek.com/feed/atom.xml
   # only_detect can force detection of :rss or :atom
   def self.fetch_feed_url(page_url, only_detect=nil)
-   
+    url = URI.parse(page_url)
+    host_with_port = url.host
+    host_with_port << ":#{url.port}" unless url.port == 80
+    STDERR.puts url
     
     res = Weary.get(page_url).perform_sleepily
-
+    
     feed_url = self.get_feed_path(res.body, only_detect)
     feed_url = "http://#{host_with_port}/#{feed_url.gsub(/^\//, '')}" unless !feed_url || feed_url =~ /^http:\/\//
     feed_url

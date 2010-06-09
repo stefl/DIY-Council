@@ -52,15 +52,19 @@ module DIY
   end
   
   def self.reroute_links(base, council)
+    STDERR.puts "reroute #{base.class}: #{base}"
     r = rebase_links(base,council)
-    r.gsub(/href\=[\"\'](.+)[\"\']/, "href=\"/#{council.slug}/page?url=#{CGI.escape($1)}\"")
-
+    STDERR.puts "result: #{r}"
+    STDERR.puts "that was the result"
+    r.to_s.gsub(/href\=[\"\'](.+)[\"\']/, "href=\"/#{council.slug}/page?url=#{CGI.escape($1)}\"") rescue r
   end
   
   def self.rebase_links(base, council)
-    base.gsub(/href\=[\"\'](\/)/){|a| 
+    STDERR.puts "rebase #{base.class} : #{base}"
+    result = base.gsub(/href\=[\"\'](\/)/){|a| 
     STDERR.puts a
-    a.chomp('/') + council["url"].chomp('/') + "/" }
+    a.chomp('/') + council["url"].chomp('/') + "/" unless a.blank?}
+    result
   end
     
   class Council

@@ -144,16 +144,16 @@ class CostSavingExercise < Sinatra::Base
   
   get "/:council_slug/page" do |council_slug|
     @council = DIY::Council.from_slug(council_slug)
-    begin
+    #begin
       @page = @council.get_page(params[:url])
       @page.load_title
       @page_title = "#{@page.title}"
       STDERR.puts @page.inspect
       haml :page
-    rescue
-      @page_title = "Sorry, that page isn't available currently"
-      haml :sorry
-    end
+    #rescue
+    #  @page_title = "Sorry, that page isn't available currently"
+    #  haml :sorry
+    #end
   end
   
   get "/:council_slug/on/:keyword" do |council_slug,keyword|

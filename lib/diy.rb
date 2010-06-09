@@ -345,8 +345,13 @@ module DIY
     end
     
     def load_title
-      doc = Nokogiri::HTML(Weary.get(self.url).perform_sleepily.body) 
-      @title = @data["title"] = DIY.titleize(doc.at_css("title").text, self.council)
+      doc = Nokogiri::HTML(Weary.get(self.url).perform_sleepily.body)
+      STDERR.puts "Got :#{doc.inspect}" 
+      STDERR.puts "Title: #{doc.at_css('h1')}"
+      
+      @title = DIY.titleize(doc.at_css("title").text, self.council) rescue @title = nil
+      @title ||= (doc.at_css("h1").text) rescue @title = "Untitled"
+      @data["title"] = @title
     end
     
     def url

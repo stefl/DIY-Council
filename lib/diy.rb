@@ -142,7 +142,7 @@ module DIY
     def suggest terms
       results = search terms
       STDERR.puts results.inspect
-      results.map{|a| {:id=>a.title, :label=>a.title, :value=>a.url}}
+      results.map{|a| {:id=>a.title, :label=>a.title, :value=>a.diy_url}}
     end
     
     def search terms 
@@ -353,6 +353,10 @@ module DIY
       @data["url"]
     end
     
+    def diy_url
+      "/page?url=#{CGI.escape(url)}"
+    end
+    
     def to_json
       "{'title':#{title},'url':#{url}}"
     end
@@ -389,6 +393,10 @@ module DIY
     
     def url
       @data["url"]
+    end
+    
+    def diy_url
+      "/page?url=#{CGI.escape(url)}"
     end
     
     def to_json

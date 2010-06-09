@@ -158,7 +158,7 @@ class CostSavingExercise < Sinatra::Base
   
   get "/:council_slug/on/:keyword" do |council_slug,keyword|
     @council = DIY::Council.from_slug(council_slug)
-    @articles = Directgov::Article.by_keyword(keyword)
+    @articles = Directgov::Article.find_by_keyword(keyword)
     if @articles
       haml :on
     else
@@ -175,11 +175,12 @@ class CostSavingExercise < Sinatra::Base
   
   get "/:council_slug/articles/:article_id" do |council_slug,article_id|
     @council = DIY::Council.from_slug(council_slug)
-    begin
-      @article = Directgov::Article.get(article_id)
+    
+    @article = Directgov::Article.get(article_id)
+    if @article
       @page_title = @article["title"]
       haml :article, :locals=>{:hide_page_title => true}
-    rescue
+    else
       @page_title = "Sorry, that page isn't available currently"
       haml :sorry
     end

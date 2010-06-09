@@ -59,7 +59,7 @@
               $('#spinner').hide();
               help_me_do_something = ui.item;
               log(ui.item ? ("Selected: " + ui.item.label + " : " + ui.item.value) : "Nothing selected, input was " + this.value);
-              document.location.href = "/#{@council.slug}/page?url=" + ui.item.value
+              document.location.href = "/#{@council.slug}" + ui.item.value
               $('#spinner').show();
               this.value = ui.item.value;
             }

@@ -53,7 +53,8 @@ module DIY
   
   def self.reroute_links(base, council)
     r = rebase_links(base,council)
-    r.gsub(/href\=[\"\']/) {|s| s + "/#{council.slug}/page?url="  }
+    r.gsub(/href\=[\"\'](.+)[\"\']/, "href=\"/#{council.slug}/page?url=#{CGI.escape($1)}\"")
+
   end
   
   def self.rebase_links(base, council)

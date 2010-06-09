@@ -117,7 +117,7 @@ module DIY
     def rss_feed
       unless rss_feed_url.blank?
         STDERR.puts "RSS Feed url to get #{rss_feed_url}"
-        @rss_feed ||= Weary.get(rss_feed_url).perform_sleepily.parse.first.last["channel"]["item"] 
+        @rss_feed ||= Weary.get(rss_feed_url).perform_sleepily.parse.first.last["channel"]["item"]  rescue []
       end
     end
     

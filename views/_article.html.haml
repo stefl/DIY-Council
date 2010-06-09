@@ -1,0 +1,6 @@
+%section.article
+        
+  %section.article_body
+    = locals[:article].readable
+  %section.meta
+    %a#original_url{:href=>locals[:article]["original_uri"]} Original page

@@ -149,10 +149,28 @@ class CostSavingExercise < Sinatra::Base
     haml :page
   end
   
+  get "/:council_slug/on/:keyword" do |council_slug,keyword|
+    @council = DIY::Council.from_slug(council_slug)
+    @articles = Directgov::Article.by_keyword(keyword)
+    if @articles
+      haml :on
+    else
+      flash[:errors] = "Sorry - we couldn't find anything for that"
+      redirect "/council/#{council_slug}"
+    end
+  end
+  
   get "/:council_slug/about" do |council_slug|
     @council = DIY::Council.from_slug(council_slug)
     @page_title = "About the council"
     haml :about
+  end
+  
+  get "/:council_slug/articles/:article_id" do |council_slug,article_id|
+    @council = DIY::Council.from_slug(council_slug)
+    @article = Directgov::Article.get(article_id)
+    @page_title = @article["title"]
+    haml :article, :locals=>{:hide_page_title => true}
   end
   
   post "/councils" do

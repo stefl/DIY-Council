@@ -1,34 +1,36 @@
-- if @council.flickr_feed && @council.flickr_feed.entries.size > 0
-  #flickr_feed
-    %h2
-      A snapshot of our area
-    .slideshow
-      - @council.flickr_feed.entries.each do |flickr_image|
-        - if flickr_image.class == Hash
-          .flickr_image
+#columns
+  - if @council.flickr_feed && @council.flickr_feed.entries.size > 0
+    #flickr_feed
+      %h2
+        A snapshot of our area
+      .slideshow
+        - @council.flickr_feed.entries.each do |flickr_image|
+          - if flickr_image.class == Hash
+            .flickr_image
       
-            - STDERR.puts @council.flickr_feed.inspect
-            = flickr_image["description"].gsub('alt=""', 'alt="' + flickr_image["title"] + "on Flickr" + '"')
+              - STDERR.puts @council.flickr_feed.inspect
+              = flickr_image["description"].gsub('alt=""', 'alt="' + flickr_image["title"] + "on Flickr" + '"')
 
-            %p
-              %a{:href=>flickr_image["link"]}
-                = flickr_image["title"]
-              on Flickr       
+              %p
+                %a{:href=>flickr_image["link"]}
+                  = flickr_image["title"]
+                on Flickr       
 
-- if @council.rss_feed_url   
-  #news          
-    %h2
-      News 
-      %a{:href=>@council.rss_feed_url}
-        %img{:src=>"/images/feed-icon-14x14.png", :width=>14, :height=>14,:alt=>"RSS"}
-    %ul#latest_news
-      - unless @council.rss_feed.blank?
-        - @council.rss_feed.entries.each do |entry|
-          %li
-            %p
-              %strong
-                %a{:href=>entry["url"]}
-                  = entry["title"]
+  - if @council.rss_feed_url   
+    #news          
+      %h2
+        News 
+        %a{:href=>@council.rss_feed_url}
+          %img{:src=>"/images/feed-icon-14x14.png", :width=>14, :height=>14,:alt=>"RSS"}
+      %ul#latest_news
+        - unless @council.rss_feed.blank?
+          - @council.rss_feed.entries.each do |entry|
+            %li
+              %p
+                %strong
+                  %a{:href=>entry["url"]}
+                    = entry["title"]
     
-              %br
-              = entry["description"]
+                %br
+                = entry["description"]
+#columns_end

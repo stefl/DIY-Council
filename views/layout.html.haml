@@ -68,7 +68,7 @@
     
   %body
     %div#page
-        
+      
       %nav#masthead
         %div#diycouncil
           %p
@@ -126,10 +126,12 @@
               /                 %span please
               %span#try
                 Try "council tax", "libraries", "park"...
-        - if @page_title
-          %header
-            %h1#page_title
-              = @page_title
+        - unless locals[:hide_page_title] == true
+          - if @page_title
+            %header
+              %h1#page_title
+                = @page_title
+                Page Title
         %section#main_content
           - if flash.has?(:errors)
             %div#message
@@ -152,6 +154,8 @@
         %a{:href=>"http://openlylocal.com"} Openly Local
         |
         %a{:href=>"http://sinatrarb.com"} Sinatra
+        |
+        %a{:href=>"http://innovate.direct.gov.uk"} Directgov Innovate
         |
         %a{:href=>"http://github.com/steflewandowski/DIY-Council"} Source code
         

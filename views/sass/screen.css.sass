@@ -285,6 +285,10 @@ h1,h2, h3, h4, h5
   font-family: "Helvetica Neue", helvetica, arial, sans-serif !important
 h2
   font-size: 125%
+div#postcode
+  position: absolute
+  top: 5px
+  left: 5px
 input#postcode
   width: 8em !important
 #about_this_site
@@ -346,8 +350,18 @@ input#postcode
     font-size: 100%
     color: #888
     margin-left: 3em
-#flickr_feed
-  height: 640px
+#columns
+  #flickr_feed
+    height: 640px
+    float: left
+    width: 45%
+    +expand
+  #news
+    width: 45%
+    float: right
+    +expand
+#columns_end
+  clear: both
 #main_content
   padding: 0.5em
   ul

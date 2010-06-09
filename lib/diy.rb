@@ -19,6 +19,7 @@ require 'diy_council_service'
 require 'diy_service_action'
 require 'phrases'
 require 'directgov'
+require 'sleepy'
 
 YAHOO_BOSS_APP_ID = "7gATyJ7V34FoqrIuRvHAAwMYi_L7gp2ZRFAoTP5sZzQlsNzmC1mjv.2yfvzITyWAhK0INaBA"
 
@@ -60,7 +61,7 @@ module DIY
     STDERR.puts a
     a.chomp('/') + council["url"].chomp('/') + "/" }
   end
-  
+    
   class Council
     
     attr_accessor :council_id
@@ -101,7 +102,7 @@ module DIY
     end
     
     def services
-      @services ||= Weary.get("http://openlylocal.com/services.json?council_id=#{council_id}").perform.parse.map{|a| Service.new(a["service"], self)} rescue []
+      @services ||= Weary.get("http://openlylocal.com/services.json?council_id=#{council_id}").perform_sleepily.parse.map{|a| Service.new(a["service"], self)} rescue []
     end
     
     def rss_feed_url
@@ -115,7 +116,7 @@ module DIY
     def rss_feed
       unless rss_feed_url.blank?
         STDERR.puts "RSS Feed url to get #{rss_feed_url}"
-        @rss_feed ||= Weary.get(rss_feed_url).perform.parse.first.last["channel"]["item"] 
+        @rss_feed ||= Weary.get(rss_feed_url).perform_sleepily.parse.first.last["channel"]["item"] 
       end
     end
     
@@ -130,7 +131,7 @@ module DIY
     end
     
     def flickr_feed
-      @flickr_feed ||= Weary.get("http://www.degraeve.com/flickr-rss/rss.php?tags=#{tag}&tagmode=all&sort=date-posted-desc&num=25").perform.parse.first.last["channel"]["item"] rescue nil
+      @flickr_feed ||= Weary.get("http://www.degraeve.com/flickr-rss/rss.php?tags=#{tag}&tagmode=all&sort=date-posted-desc&num=25").perform_sleepily.parse.first.last["channel"]["item"] rescue nil
     end
     
     def suggest terms
@@ -141,9 +142,14 @@ module DIY
     
     def search terms 
       terms = self.class.clean_terms terms
-      results = Weary.get("http://boss.yahooapis.com/ysearch/web/v1/site:#{@data["url"]}%20#{terms}?appid=#{YAHOO_BOSS_APP_ID}&count=8&type=html&format=json").perform.parse
-      pages = results.first.last["resultset_web"].map{|a| Page.new(a, self)} rescue []
-      services.select{|a| a["title"].downcase.include?(terms)} + pages
+      articles = articles_about(terms)
+      pages = find_pages(terms)
+      articles + services.select{|a| a["title"].downcase.include?(terms)} + pages
+    end
+    
+    def find_pages terms
+      results = Weary.get("http://boss.yahooapis.com/ysearch/web/v1/site:#{@data["url"]}%20#{terms}?appid=#{YAHOO_BOSS_APP_ID}&count=8&type=html&format=json").perform_sleepily.parse.first.last["resultset_web"] rescue []
+      results.map{|a| Page.new(a, self)} rescue []
     end
     
     def info
@@ -155,7 +161,7 @@ module DIY
     end
     
     def load
-      @data ||= Weary.get("http://openlylocal.com/councils/#{council_id}.json").perform.parse["council"]
+      @data ||= Weary.get("http://openlylocal.com/councils/#{council_id}.json").perform_sleepily.parse["council"]
     end
     
     def get_page url
@@ -165,7 +171,7 @@ module DIY
     def performance_url
       return @performance_url unless @performance_url.blank?
       terms = self.name.gsub(" ", "%20")
-      results = Weary.get("http://boss.yahooapis.com/ysearch/web/v1/site:http://oneplace.direct.gov.uk%20#{terms}?appid=#{YAHOO_BOSS_APP_ID}&count=1&type=html&format=json").perform.parse
+      results = Weary.get("http://boss.yahooapis.com/ysearch/web/v1/site:http://oneplace.direct.gov.uk%20#{terms}?appid=#{YAHOO_BOSS_APP_ID}&count=1&type=html&format=json").perform_sleepily.parse
       @performance_url = results.first.last["resultset_web"].first["url"] rescue nil
     end
     
@@ -178,7 +184,7 @@ module DIY
     end
     
     def self.all
-      @@all_councils ||= Weary.get("http://openlylocal.com/councils/all.json").perform.parse.map{|a| Council.new(a["council"]["id"], a["council"])}
+      @@all_councils ||= Weary.get("http://openlylocal.com/councils/all.json").perform_sleepily.parse.map{|a| Council.new(a["council"]["id"], a["council"])}
     end
     
     def self.get(id)
@@ -198,7 +204,7 @@ module DIY
     end
     
     def self.find_by_postcode(postcode)
-      postie = Weary.get("http://openlylocal.com/areas/postcodes/#{postcode.gsub(' ', '')}.json").perform.parse["postcode"]
+      postie = Weary.get("http://openlylocal.com/areas/postcodes/#{postcode.gsub(' ', '')}.json").perform_sleepily.parse["postcode"]
       STDERR.puts postie.inspect
       self.get(postie["council_id"])
     end
@@ -212,7 +218,7 @@ module DIY
     end
     
     def members
-      Weary.get("http://openlylocal.com/members.json?council_id=#{self.id}").perform.parse.map{|a| a["member"]} rescue []
+      Weary.get("http://openlylocal.com/members.json?council_id=#{self.id}").perform_sleepily.parse.map{|a| a["member"]} rescue []
     end
     
     def profile_url
@@ -252,11 +258,14 @@ module DIY
       
     end
     
-    def page_about keyword
-      # if we can get an exact match returns a Page, otherwise nil
-      
-      Action.first(:word=>"keyword").services
+    def articles_about keyword
+      Directgov::Article.find_by_keyword(keyword)
     end
+    
+    def planning_applications
+      
+    end
+    
     
   end
   
@@ -272,7 +281,7 @@ module DIY
     end
     
     def self.get id
-      m = Member.new(Weary.get("http://openlylocal.com/members/#{id}.json").perform.parse["member"])
+      m = Member.new(Weary.get("http://openlylocal.com/members/#{id}.json").perform_sleepily.parse["member"])
       STDERR.puts m.inspect
       m
     end

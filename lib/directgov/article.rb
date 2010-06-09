@@ -1,12 +1,13 @@
+require 'cgi'
 
 module Directgov
   class Article
     attr_accessor :data
     
-    def self.by_keyword(word)
-      Weary.get("http://syndication.innovate.direct.gov.uk/keywords/#{word}/articles.json"){|req|
+    def self.find_by_keyword(word)
+      Weary.get("http://syndication.innovate.direct.gov.uk/keywords/#{CGI.escape(word)}/articles.json"){|req|
         req.credentials = {:username => ::DIRECTGOV_USER, :password => ::DIRECTGOV_PASS}
-      }.perform.parse.map{|a| Directgov::Article.new(a["article"])} #rescue []
+      }.perform_sleepily.parse.map{|a| Directgov::Article.new(a["article"])} #rescue []
     end
     
     def initialize(d)
@@ -16,8 +17,23 @@ module Directgov
     def self.get(id)
       Directgov::Article.new(Weary.get("http://syndication.innovate.direct.gov.uk/id/article/#{id}.json"){|req|
         req.credentials = {:username => ::DIRECTGOV_USER, :password => ::DIRECTGOV_PASS}
-      }.perform.parse["article"]) #rescue nil
+      }.perform_sleepily.parse["article"]) #rescue nil
     end
     
+    def [](ind)
+      @data[ind]
+    end
+    
+    def readable
+      @data["sections"].each.map{|a| a["content"]} unless @data.blank?
+    end
+    
+    def title
+      @data["title"]
+    end
+    
+    def url
+      "/articles/#{@data["id"]}"
+    end
   end
 end

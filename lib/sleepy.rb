@@ -31,8 +31,8 @@ module Weary
         
         req = http.request(request)
         STDERR.puts "try nap"
-        nap = sleepy.get("#{round_time(Time.new.to_i, timeout)}:#{request.path}") rescue nil
-        STDERR.puts "Nap: #{nap}"
+        nap = sleepy.get("#{round_time(Time.new.to_i, timeout)}:#{uri}") rescue nil
+        
         if nap
           STDERR.puts "Return cached result"
           nap
@@ -45,10 +45,10 @@ module Weary
               on_complete.call(response) if on_complete
               response
             end
-            sleepy.set("#{round_time(Time.new.to_i, timeout)}:#{request.path}", response)
-            sleepy.set("0:#{request.path}", response)
+            sleepy.set("#{round_time(Time.new.to_i, timeout)}:#{uri}", response)
+            sleepy.set("0:#{uri}", response)
           rescue
-            sleepy.get("0:#{request.path}") rescue nil
+            sleepy.get("0:#{uri}") rescue nil
           end
           response
         end

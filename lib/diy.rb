@@ -178,7 +178,7 @@ module DIY
     def performance
       return @performance unless @performance.blank?
       if performance_url
-        doc = Nokogiri::HTML.parse(open(performance_url).read)
+        doc = Nokogiri::HTML.parse(Weary.get(performance_url).perform_sleepily.body)
         @performance = DIY.reroute_links(doc.css('div#content div.contentLeft').to_html, self)
       end
     end
@@ -227,7 +227,7 @@ module DIY
     
     def stats
       return @stats unless @stats.blank?
-      doc = Nokogiri::HTML.parse(open(profile_url).read)
+      doc = Nokogiri::HTML.parse(Weary.get(profile_url).perform_sleepily.body)
       @stats = DIY.rebase_links(doc.css('#grouped_datapoints').to_html, {"url"=>"http://openlylocal.com"})
     end
     
@@ -241,7 +241,7 @@ module DIY
     def contact_details
       return @contact_details unless @contact_details.blank?
       return nil if directgov_url.blank?
-      doc = Nokogiri::HTML.parse(open(directgov_url).read)
+      doc = Nokogiri::HTML.parse(Weary.get(directgov_url).perform_sleepily.body)
       @contact_details = DIY.add_telephone_microformats(doc.css('.subContent').to_html)
     end
     
@@ -253,7 +253,7 @@ module DIY
       #TODO Looks like ONS has a 'browser check' that only lets you through if you have javascript. Lame.
       return @ons_datasets unless @ons_datasets.blank?
       return nil if ons_url.blank?
-      doc = Nokogiri::HTML.parse(open(ons_url).read)
+      doc = Nokogiri::HTML.parse(Weary.get(ons_url).perform_sleepily.body)
       @ons_datasets = DIY.rebase_links(doc.css('.leftBody').to_html, {"url"=>"http://neighbourhood.statistics.gov.uk/dissemination"})
       
     end
@@ -305,7 +305,7 @@ module DIY
     end
     
     def readable
-      @readable ||= DIY.reroute_links(Readability::Document.new(open(self.data["url"]).read).content, self.council)
+      @readable ||= DIY.reroute_links(Readability::Document.new(Weary.get(@data["url"]).perform_sleepily.body).content, self.council)
     end
     
     def title
@@ -313,7 +313,7 @@ module DIY
     end
     
     def load_title
-      doc = Nokogiri::HTML(open(self.url)) 
+      doc = Nokogiri::HTML(Weary.get(self.url).perform_sleepily.body) 
       @title = @data["title"] = DIY.titleize(doc.at_css("title").text, self.council)
     end
     
@@ -348,7 +348,7 @@ module DIY
     end
     
     def readable
-      Readability::Document.new(open(self.data["url"]).read)
+      Readability::Document.new(Weary.get(@data["url"]).perform_sleepily.body).read
     end
     
     def title

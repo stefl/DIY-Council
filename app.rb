@@ -102,8 +102,10 @@ class CostSavingExercise < Sinatra::Base
   end
 
   get "/:council_slug" do |council_slug|
+    
     @council = DIY::Council.from_slug(council_slug)
     raise Sinatra::NotFound if @council.blank?
+    session[:council_slug] = council_slug
     @services = @council.services
     @rss_feed = @council.rss_feed
     
@@ -142,11 +144,16 @@ class CostSavingExercise < Sinatra::Base
   
   get "/:council_slug/page" do |council_slug|
     @council = DIY::Council.from_slug(council_slug)
-    @page = @council.get_page(params[:url])
-    @page.load_title
-    @page_title = "#{@page.title}"
-    STDERR.puts @page.inspect
-    haml :page
+    begin
+      @page = @council.get_page(params[:url])
+      @page.load_title
+      @page_title = "#{@page.title}"
+      STDERR.puts @page.inspect
+      haml :page
+    rescue
+      @page_title = "Sorry, that page isn't available currently"
+      haml :sorry
+    end
   end
   
   get "/:council_slug/on/:keyword" do |council_slug,keyword|
@@ -168,9 +175,14 @@ class CostSavingExercise < Sinatra::Base
   
   get "/:council_slug/articles/:article_id" do |council_slug,article_id|
     @council = DIY::Council.from_slug(council_slug)
-    @article = Directgov::Article.get(article_id)
-    @page_title = @article["title"]
-    haml :article, :locals=>{:hide_page_title => true}
+    begin
+      @article = Directgov::Article.get(article_id)
+      @page_title = @article["title"]
+      haml :article, :locals=>{:hide_page_title => true}
+    rescue
+      @page_title = "Sorry, that page isn't available currently"
+      haml :sorry
+    end
   end
   
   post "/councils" do

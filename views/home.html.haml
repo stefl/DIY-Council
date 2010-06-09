@@ -4,7 +4,15 @@
     #get_started
       %h1
         Easy access to your local council starts here
-        
+      - if session[:council_slug]
+        #last_viewed
+          %h2
+            %a{:href=>"/#{session[:council_slug]}"}
+              = DIY::Council.from_slug(session[:council_slug]).name
+      
+      .either_or
+        or
+                    
       #by_postcode
         %form#your_postcode{:action=>"/find_by_postcode", :method=>:post}
           %label{:for=>"postcode"} 
@@ -13,7 +21,7 @@
             %button{:type=>"submit", :name=>"Go"}
               %span find my council
       
-      #either_or
+      .either_or
         or
       
       #by_name

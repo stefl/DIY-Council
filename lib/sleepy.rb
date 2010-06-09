@@ -27,16 +27,18 @@ module Weary
     def perform_sleepily!(timeout=60*60*1000, &block)
       @on_complete = block if block_given?
       Thread.new {
+        STDERR.puts "Before send: #{uri}"
         before_send.call(self) if before_send
         
-        req = http.request(request)
         STDERR.puts "try nap"
         nap = sleepy.get("#{round_time(Time.new.to_i, timeout)}:#{uri}") rescue nil
         
-        if nap
-          STDERR.puts "Return cached result"
+        unless nap.blank?
+          STDERR.puts "Return cached result #{nap.inspect}"
           nap
         else
+          req = http.request(request)
+          
           response = Response.new(req, self)
           begin
             if response.redirected? && follows?

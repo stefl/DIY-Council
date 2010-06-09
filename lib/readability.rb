@@ -294,7 +294,7 @@ module Readability
           #todo - kill links to #top etc.
           # Otherwise, replace the element with its contents
         else
-          el.swap(el.text)
+          el.swap(el.text) rescue STDERR.puts "Some kind of strange problem with swapping out whitelist items"
         end
 
       end

@@ -142,8 +142,8 @@ module DIY
     
     def search terms 
       terms = self.class.clean_terms terms
-      articles = articles_about(terms)
-      pages = find_pages(terms)
+      articles = articles_about(terms) rescue []
+      pages = find_pages(terms) rescue []
       articles + services.select{|a| a["title"].downcase.include?(terms)} + pages
     end
     
@@ -161,7 +161,7 @@ module DIY
     end
     
     def load
-      @data ||= Weary.get("http://openlylocal.com/councils/#{council_id}.json").perform_sleepily.parse["council"]
+      @data ||= Weary.get("http://openlylocal.com/councils/#{council_id}.json").perform_sleepily.parse["council"] rescue []
     end
     
     def get_page url
@@ -169,17 +169,25 @@ module DIY
     end
     
     def performance_url
-      return @performance_url unless @performance_url.blank?
-      terms = self.name.gsub(" ", "%20")
-      results = Weary.get("http://boss.yahooapis.com/ysearch/web/v1/site:http://oneplace.direct.gov.uk%20#{terms}?appid=#{YAHOO_BOSS_APP_ID}&count=1&type=html&format=json").perform_sleepily.parse
-      @performance_url = results.first.last["resultset_web"].first["url"] rescue nil
+      begin
+        return @performance_url unless @performance_url.blank?
+        terms = self.name.gsub(" ", "%20")
+        results = Weary.get("http://boss.yahooapis.com/ysearch/web/v1/site:http://oneplace.direct.gov.uk%20#{terms}?appid=#{YAHOO_BOSS_APP_ID}&count=1&type=html&format=json").perform_sleepily.parse
+        @performance_url = results.first.last["resultset_web"].first["url"] rescue nil
+      rescue
+        nil
+      end
     end
     
     def performance
-      return @performance unless @performance.blank?
-      if performance_url
-        doc = Nokogiri::HTML.parse(Weary.get(performance_url).perform_sleepily.body)
-        @performance = DIY.reroute_links(doc.css('div#content div.contentLeft').to_html, self)
+      begin
+        return @performance unless @performance.blank?
+        if performance_url
+          doc = Nokogiri::HTML.parse(Weary.get(performance_url).perform_sleepily.body)
+          @performance = DIY.reroute_links(doc.css('div#content div.contentLeft').to_html, self)
+        end
+      rescue
+        nil
       end
     end
     
@@ -204,9 +212,13 @@ module DIY
     end
     
     def self.find_by_postcode(postcode)
-      postie = Weary.get("http://openlylocal.com/areas/postcodes/#{postcode.gsub(' ', '')}.json").perform_sleepily.parse["postcode"]
-      STDERR.puts postie.inspect
-      self.get(postie["council_id"])
+      begin
+        postie = Weary.get("http://openlylocal.com/areas/postcodes/#{postcode.gsub(' ', '')}.json").perform_sleepily.parse["postcode"]
+        STDERR.puts postie.inspect
+        self.get(postie["council_id"])
+      rescue
+        nil
+      end
     end
     
     def method_missing(method_name)
@@ -226,23 +238,35 @@ module DIY
     end
     
     def stats
-      return @stats unless @stats.blank?
-      doc = Nokogiri::HTML.parse(Weary.get(profile_url).perform_sleepily.body)
-      @stats = DIY.rebase_links(doc.css('#grouped_datapoints').to_html, {"url"=>"http://openlylocal.com"})
+      begin
+        return @stats unless @stats.blank?
+        doc = Nokogiri::HTML.parse(Weary.get(profile_url).perform_sleepily.body)
+        @stats = DIY.rebase_links(doc.css('#grouped_datapoints').to_html, {"url"=>"http://openlylocal.com"})
+      rescue
+        "Sorry - stats are currently unavailable"
+      end
     end
     
     def directgov_url
-      return @directgov_url unless @directgov_url.blank?
-      terms = self.name.gsub(" ", "%20")
-      results = Weary.get("http://boss.yahooapis.com/ysearch/web/v1/site:http://direct.gov.uk%20#{terms}?appid=#{YAHOO_BOSS_APP_ID}&count=1&type=html&format=json").perform.parse
-      @directgov_url = results.first.last["resultset_web"].first["url"] rescue nil
+      begin
+        return @directgov_url unless @directgov_url.blank?
+        terms = self.name.gsub(" ", "%20")
+        results = Weary.get("http://boss.yahooapis.com/ysearch/web/v1/site:http://direct.gov.uk%20#{terms}?appid=#{YAHOO_BOSS_APP_ID}&count=1&type=html&format=json").perform.parse
+        @directgov_url = results.first.last["resultset_web"].first["url"] rescue nil
+      rescue
+        nil
+      end
     end
     
     def contact_details
-      return @contact_details unless @contact_details.blank?
-      return nil if directgov_url.blank?
-      doc = Nokogiri::HTML.parse(Weary.get(directgov_url).perform_sleepily.body)
-      @contact_details = DIY.add_telephone_microformats(doc.css('.subContent').to_html)
+      begin
+        return @contact_details unless @contact_details.blank?
+        return nil if directgov_url.blank?
+        doc = Nokogiri::HTML.parse(Weary.get(directgov_url).perform_sleepily.body)
+        @contact_details = DIY.add_telephone_microformats(doc.css('.subContent').to_html)
+      rescue
+        "Sorry - contact details are currently unavailable"
+      end
     end
     
     def ons_url
@@ -250,12 +274,15 @@ module DIY
     end
     
     def ons_datasets
-      #TODO Looks like ONS has a 'browser check' that only lets you through if you have javascript. Lame.
-      return @ons_datasets unless @ons_datasets.blank?
-      return nil if ons_url.blank?
-      doc = Nokogiri::HTML.parse(Weary.get(ons_url).perform_sleepily.body)
-      @ons_datasets = DIY.rebase_links(doc.css('.leftBody').to_html, {"url"=>"http://neighbourhood.statistics.gov.uk/dissemination"})
-      
+      begin
+        #TODO Looks like ONS has a 'browser check' that only lets you through if you have javascript. Lame.
+        return @ons_datasets unless @ons_datasets.blank?
+        return nil if ons_url.blank?
+        doc = Nokogiri::HTML.parse(Weary.get(ons_url).perform_sleepily.body)
+        @ons_datasets = DIY.rebase_links(doc.css('.leftBody').to_html, {"url"=>"http://neighbourhood.statistics.gov.uk/dissemination"})
+      rescue
+        nil
+      end
     end
     
     def articles_about keyword

@@ -33,38 +33,7 @@
     - else
       %link{:href => "/css/pretty.css", :media => 'screen', :rel => 'stylesheet', :type => 'text/css'}/
       
-    - if @council
-      <script type="text/javascript"></script>
-      :javascript
-        var help_me_do_something;
-      
-        $(function() {
-          $('.slideshow').cycle({ fx: 'fade' });
-           
-          function log(message) {
-            $("<div/>").text(message).prependTo("#log");
-            $("#log").attr("scrollTop", 0);
-          }
-          $("#spinner").hide();
-          $("#something").autocomplete({
-            source: "/#{@council.slug}/suggest",
-            minLength: 2,
-            search: function(event, ui) { 
-              $('#spinner').show();
-            },
-            open: function(event, ui) {
-              $('#spinner').hide();
-            },
-            select: function(event, ui) {
-              $('#spinner').hide();
-              help_me_do_something = ui.item;
-              log(ui.item ? ("Selected: " + ui.item.label + " : " + ui.item.value) : "Nothing selected, input was " + this.value);
-              document.location.href = "/#{@council.slug}" + ui.item.value
-              $('#spinner').show();
-              this.value = ui.item.value;
-            }
-          });
-        });
+
     
   %body
     %div#page
@@ -115,16 +84,22 @@
       %section#content
        
         - if @council
-          %form#do_something{:action=>"/#{@council.slug}/page", :method=>:get, :onsubmit=>"return false;"}
+          %form#do_something{:action=>"/#{@council.slug}/page", :method=>:get, :onsubmit=>"document.location.href='/#{@council.slug}/on/' + $('#something').val(); return false;"}
             %label{:for=>"url"}
               %span
                 Show me
               %input{:type=>"text",:size=>"48", :name=>"url", :id=>"something", :value=>"something I'd like to know about"}
-              %img{:src=>"/ajax-loader.gif", :id=>"spinner"}
-              / %button{:type=>"submit", :name=>"please"}
-              /                 %span please
+              //%img{:src=>"/ajax-loader.gif", :id=>"spinner"}
+              %button{:type=>"submit", :name=>"please"}
+                %span please
               %span#try
-                Try "council tax", "libraries", "park"...
+                Try 
+                %a{:href=>"/#{@council.slug}/on/council+tax"} council tax
+                ,
+                %a{:href=>"/#{@council.slug}/on/libraries"} libraries
+                ,
+                %a{:href=>"/#{@council.slug}/on/parks"} parks
+
         - unless locals[:hide_page_title] == true
           - if @page_title
             %header

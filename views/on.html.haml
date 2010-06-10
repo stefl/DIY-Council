@@ -1,2 +1,120 @@
-- @articles.each do |article|
-  = haml :article, :layout=>false, :locals=>{:article=>article}
+:javascript
+  $(function () {
+  
+    var msie6 = $.browser == 'msie' && $.browser.version < 7;
+  
+    if (!msie6) {
+      var top = $('#suggestions').offset().top - parseFloat($('#suggestions').css('margin-top').replace(/auto/, 0));
+      $(window).scroll(function (event) {
+        // what the y position of the scroll is
+        var y = $(this).scrollTop();
+        console.log(y);
+        // whether that's below the form
+        if (y >= top) {
+          // if so, ad the fixed class
+          $('#suggestions').addClass('fixed');
+          console.log("add it");
+        } else {
+          // otherwise remove it
+          $('#suggestions').removeClass('fixed');
+          console.log("remove it");
+        }
+      });
+    }  
+  });
+%nav#suggestions
+  %ul
+    %li.top
+      %a{:href=>"#top"}
+        Top
+    - count = 0
+    - @results.each do |result|
+      - count = count+1
+      %li.part
+        %a{:href=>"#part_#{count}"}
+          = result.title
+#results
+  %a{:name=>"top"}
+  #mapsearch
+    %span
+      Loading map...
+
+  :plain
+    <style type="text/css">
+      @import url("http://www.google.com/uds/css/gsearch.css");
+    </style>
+    <style type="text/css">
+      @import url("http://www.google.com/uds/solutions/mapsearch/gsmapsearch.css");
+    </style>
+
+    <style type="text/css">
+      .gsmsc-mapDiv {
+        height: 320px;
+      }
+
+      .gsmsc-idleMapDiv {
+        height: 320px;
+      }
+
+      #mapsearch {
+        width: auto;
+        margin-bottom: 10px;
+      }
+    </style>
+
+  :plain
+    <script src="http://maps.google.com/maps?file=api&v=2&key=ABQIAAAAa7htYtqM06zRBCnvw4H0whQ2RqH0IJk4nJYrk3wVgiCahHSxUhSZ-XIME5C5d57h_y1hobXAi8Jovg"
+       type="text/javascript"></script>
+     <script src="http://www.google.com/uds/api?file=uds.js&v=1.0&source=uds-msw&key=ABQIAAAAa7htYtqM06zRBCnvw4H0whQ2RqH0IJk4nJYrk3wVgiCahHSxUhSZ-XIME5C5d57h_y1hobXAi8Jovg"
+       type="text/javascript"></script>
+
+
+     <!-- Map Search Control and Stylesheet -->
+     <script type="text/javascript">
+       window._uds_msw_donotrepair = true;
+     </script>
+     <script src="http://www.google.com/uds/solutions/mapsearch/gsmapsearch.js?mode=new"
+       type="text/javascript"></script>
+       <script type="text/javascript">
+         var localSearch;
+         function loadSubject() {
+  = "localSearch.execute('#{@subject}');"  
+  :plain
+         }
+         
+         function LoadMapSearchControl() {
+           var options = {
+                 zoomControl : GSmapSearchControl.ZOOM_CONTROL_ENABLE_ALL,
+                 title : "DIY Council",
+                 url : "http://diycouncil.com",
+                 idleMapZoom : GSmapSearchControl.ACTIVE_MAP_ZOOM+1,
+                 activeMapZoom : GSmapSearchControl.ACTIVE_MAP_ZOOM+1,
+                 onBootComplete : loadSubject
+                 }
+
+  - if session[:postcode]
+    = "var center = '#{session[:postcode]}';"
+  - else
+    = "var center = new Object();"
+    = "center.lat = #{@council["lat"]};" 
+    = "center.lng = #{@council["lng"]};"
+  :plain                     
+           localSearch = new GSmapSearchControl(
+             document.getElementById("mapsearch"),
+             center,
+             options
+           );
+       }
+       // arrange for this function to be called during body.onload
+       // event processing
+       $(document).ready(function(){LoadMapSearchControl();
+    
+  :plain 
+    console.log("tried to load");
+       });
+     </script>
+  - res = 0
+  - @results.each do |item|
+    - res = res + 1
+    
+    = haml :_item, :layout=>false, :locals=>{:item=>item, :jumpdown=>"part_#{res}"}

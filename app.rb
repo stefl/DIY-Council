@@ -158,8 +158,9 @@ class CostSavingExercise < Sinatra::Base
   
   get "/:council_slug/on/:keyword" do |council_slug,keyword|
     @council = DIY::Council.from_slug(council_slug)
-    @articles = Directgov::Article.find_by_keyword(keyword)
-    if @articles
+    @results = @council.search(keyword)
+    @subject = keyword
+    if @results
       haml :on
     else
       flash[:errors] = "Sorry - we couldn't find anything for that"

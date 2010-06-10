@@ -36,9 +36,9 @@ module DIY
     common_separators.each{|sep| separator = sep if title.include?(sep)}
     if separator
       items = title.split(separator)
-      if(items.first.similarity(council_name) > 0.5)
+      if(items.first.include?(council_name) || items.first.similarity(council_name) > 0.5)
         items.delete_at(0)
-      elsif(items.last.similarity(council_name) > 0.5)
+      elsif(items.last.include?(council_name) || items.last.similarity(council_name) > 0.5)
         items.delete_at(items.size - 1)
       end
       items.join(" | ")
@@ -341,6 +341,10 @@ module DIY
     end
     
     def title
+      return @title unless @title.blank?
+      if @data["title"].blank?
+        self.load_title
+      end
       @title ||= DIY.titleize(@data["title"], council)
     end
     
@@ -389,9 +393,9 @@ module DIY
     end
     
     def readable
-      Readability::Document.new(Weary.get(@data["url"]).perform_sleepily.body).read
+      @readable ||= DIY.reroute_links(Readability::Document.new(Weary.get(@data["url"]).perform_sleepily.body).content, self.council)
     end
-    
+        
     def title
       @title ||= DIY.titleize(@data["title"], council)
     end

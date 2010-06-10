@@ -1,0 +1,11 @@
+%article
+  - if locals[:item].title    
+    %header
+      %h2
+        - if locals[:jumpdown]
+          %a{:name=>locals[:jumpdown], :id=>locals[:jumpdown]}
+            = locals[:item].title
+        - else
+          = locals[:item].title
+  %section
+    = locals[:item].readable.to_s.gsub("<h1>#{locals[:item].title}</h1>","").gsub("<h2>#{locals[:item].title}</h2>","")

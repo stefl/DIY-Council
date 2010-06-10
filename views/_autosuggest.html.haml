@@ -1,0 +1,32 @@
+:plain
+  <script type="text/javascript"></script>
+  :javascript
+    var help_me_do_something;
+
+    $(function() {
+      $('.slideshow').cycle({ fx: 'fade' });
+     
+      function log(message) {
+        $("<div/>").text(message).prependTo("#log");
+        $("#log").attr("scrollTop", 0);
+      }
+      $("#spinner").hide();
+      $("#something").autocomplete({
+        source: "/#{@council.slug}/suggest",
+        minLength: 2,
+        search: function(event, ui) { 
+          $('#spinner').show();
+        },
+        open: function(event, ui) {
+          $('#spinner').hide();
+        },
+        select: function(event, ui) {
+          $('#spinner').hide();
+          help_me_do_something = ui.item;
+          log(ui.item ? ("Selected: " + ui.item.label + " : " + ui.item.value) : "Nothing selected, input was " + this.value);
+          document.location.href = "/#{@council.slug}" + ui.item.value
+          $('#spinner').show();
+          this.value = ui.item.value;
+        }
+      });
+    });

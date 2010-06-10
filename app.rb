@@ -78,7 +78,7 @@ class CostSavingExercise < Sinatra::Base
   end
   
   get "/forget_postcode" do
-    session["postcode"] = nil
+    session[:postcode] = nil
     flash[:errors] = "Your postcode has been forgotten"
     redirect "/"
   end

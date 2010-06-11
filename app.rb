@@ -80,13 +80,13 @@ class CostSavingExercise < Sinatra::Base
   get "/forget_postcode" do
     session[:postcode] = nil
     flash[:errors] = "Your postcode has been forgotten"
-    back
+    redirect back
   end
   
   post "/appearance" do
     session[:appearance] = params[:appearance]    
     flash[:errors] = "Your new display style"
-    back
+    redirect back
   end
   
   post "/find_by_postcode" do

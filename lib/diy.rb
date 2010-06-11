@@ -20,10 +20,16 @@ require 'diy_service_action'
 require 'phrases'
 require 'directgov'
 require 'sleepy'
+require 'hashie'
 
 YAHOO_BOSS_APP_ID = "7gATyJ7V34FoqrIuRvHAAwMYi_L7gp2ZRFAoTP5sZzQlsNzmC1mjv.2yfvzITyWAhK0INaBA"
 
 module DIY
+  
+  def self.reload
+    load File.expand_path(File.join(File.dirname(__FILE__),"diy.rb"))
+  end
+  
   def self.connect
     DataMapper.setup(:default, "postgres://postgres:postgres@localhost:5432/diycouncil_#{ENV["RACK_ENV"] || "development"}")
   end
@@ -290,14 +296,40 @@ module DIY
       end
     end
     
+    def woeid_url
+      "http://query.yahooapis.com/v1/public/yql?q=select%20woeid%20from%20geo.places%20where%20text%3D%22#{CGI.escape(self.slug.gsub("_"," ") + ", uk")}%22&format=json&diagnostics=true&callback="
+    end
+    
+    def woeid
+      return @woeid unless @woeid.blank?
+      @woeidres = Weary.get(woeid_url).perform_sleepily.parse["query"]["results"]["place"]["woeid"] rescue nil
+    end
+    
     def articles_about keyword
       Directgov::Article.find_by_keyword(keyword)
+    end
+    
+    def events_url
+      "http://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20upcoming.events%20where%20woeid%20in%20(select%20woeid%20from%20geo.places%20where%20text%3D%22#{CGI.escape(self.slug.gsub("_"," ") + ", uk")}%22)%20%7C%20sort(field%3D%22start_date%22)&format=json&diagnostics=true&callback="
+    end
+    
+    def events
+      return @events unless @events.blank?
+      begin
+        res = Weary.get(events_url).perform_sleepily.parse["query"]["results"]["event"]
+        if res.class == Hash
+          @events = [Hashie::Mash.new(res)]
+        elsif res.class == Array
+          @events = res.map{|a| Hashie::Mash.new(a) }
+        end
+      rescue
+        []
+      end
     end
     
     def planning_applications
       
     end
-    
     
   end
   
@@ -373,6 +405,7 @@ module DIY
     def method_missing(method_name)
       @data[method_name]
     end
+    
   end
   
   class Service

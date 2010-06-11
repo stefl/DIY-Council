@@ -20,8 +20,20 @@
                   = flickr_image["title"]
                 on Flickr       
 
-  - if @council.rss_feed_url   
-    #news          
+  #news
+    - if @council.events.size > 0
+      %h2
+        Events
+      %ul
+        - @council.events.each do |event|
+          %li.event
+            %h3
+              %a{:href=>"http://upcoming.yahoo.com/event/#{event.id}"}= event.name
+            %p
+              = event.start_date_last_rendition
+            /= event.description
+    - if @council.rss_feed_url   
+       
       %h2
         News 
         %a{:href=>@council.rss_feed_url}
@@ -34,9 +46,9 @@
                 %strong
                   %a{:href=>entry["url"]}
                     = entry["title"]
-    
-                %br
-                = entry["description"]
+  
+                /%br
+                /= entry["description"]
         - else
           %li
             News is currently unavailable

@@ -28,9 +28,9 @@
         - @council.events.each do |event|
           %li.event
             %h3
-              %a{:href=>"http://upcoming.yahoo.com/event/#{event.id}"}= event.name
-            %p
               = event.start_date_last_rendition
+              %a{:href=>"http://upcoming.yahoo.com/event/#{event.id}"}= event.name
+              
             /= event.description
     - if @council.rss_feed_url   
        

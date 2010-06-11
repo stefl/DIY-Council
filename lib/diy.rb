@@ -31,7 +31,7 @@ module DIY
   end
   
   def self.connect
-    DataMapper.setup(:default, "postgres://postgres:postgres@localhost:5432/diycouncil_#{ENV["RACK_ENV"] || "development"}")
+    #DataMapper.setup(:default, "postgres://postgres:postgres@localhost:5432/diycouncil_#{ENV["RACK_ENV"] || "development"}")
   end
   
   def self.titleize title, council

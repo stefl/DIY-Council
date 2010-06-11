@@ -1,9 +1,10 @@
-:javascript
-  $(function() {
-    $('.slideshow').cycle({ fx: 'fade' });
-  });
+
 #columns
   - if @council.flickr_feed && @council.flickr_feed.entries.size > 0
+    :javascript
+      $(function() {
+        $('.slideshow').cycle({ fx: 'fade' });
+      });
     #flickr_feed
       %h2
         A snapshot of our area

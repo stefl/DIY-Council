@@ -77,6 +77,7 @@ module DIY
     
     attr_accessor :council_id
     attr_accessor :data
+    attr_accessor :postcode
     
     def [](ind)
       @data[ind]
@@ -99,9 +100,10 @@ module DIY
       found unless found.blank?
     end
     
-    def initialize(id, the_data = nil)
+    def initialize(id, the_data = nil, p = nil)
       self.council_id = id    
       self.data = the_data if the_data
+      self.postcode = p
     end
     
     def name
@@ -309,11 +311,11 @@ module DIY
       Directgov::Article.find_by_keyword(keyword)
     end
     
-    def events_url
+    def upcoming_events_url
       "http://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20upcoming.events%20where%20woeid%20in%20(select%20woeid%20from%20geo.places%20where%20text%3D%22#{CGI.escape(self.slug.gsub("_"," ") + ", uk")}%22)%20%7C%20sort(field%3D%22start_date%22)&format=json&diagnostics=true&callback="
     end
     
-    def events
+    def upcoming_events
       return @events unless @events.blank?
       begin
         res = Weary.get(events_url).perform_sleepily.parse["query"]["results"]["event"]
@@ -327,8 +329,44 @@ module DIY
       end
     end
     
+    def wcwg_events_url
+      "http://www.wcwg.info/feeds/localevents.aspx?a=12345&p=#{postcode.gsub(" ","")}"
+    end
+    
+    def wcwg_events
+      return @wcwg_events unless @wcwg_events.blank?
+      begin
+        res = Weary.get(events_url).perform_sleepily.parse["LocalEvents"]["item"]
+        if res.class == Hash
+          @wcwg_events = [Hashie::Mash.new(res)]
+        elsif res.class == Array
+          @wcwg_events = res.map{|a| Hashie::Mash.new(a) }
+        end
+      rescue
+        []
+      end
+    end
+    
+    def events
+      upcoming_events
+    end
+    
+    def planning_application_surl
+      "http://www.planningalerts.com/api.php?postcode=#{@postcode.gsub(" ", "")}&area_size=m"
+    end
+    
     def planning_applications
-      
+      return @planning_applications unless @planning_applications.blank?
+      begin
+        res = Weary.get(planning_applications_url).perform_sleepily.parse["items"]
+        if res.class == Hash
+          @planning_applications = [Hashie::Mash.new(res)]
+        elsif res.class == Array
+          @planning_applications = res.map{|a| Hashie::Mash.new(a) }
+        end
+      rescue
+        []
+      end
     end
     
   end
